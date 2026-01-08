@@ -1,0 +1,36 @@
+@import "tailwindcss";
+
+@theme {
+  /* Custom theme values if needed, e.g. --color-primary: ... */
+}
+
+/* Custom CSS */
+body {
+  background-color: #ffffff;
+  color: var(--color-gray-900);
+}
+
+/* Slow clockwise rotation for circular menu */
+@keyframes spin-slow {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes counter-spin {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(-360deg);
+  }
+}
+
+.animate-spin-slow {
+  animation: spin-slow 180s linear infinite;
+}

@@ -1,0 +1,31 @@
+# Dependencies
+node_modules/
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# Build outputs
+.svelte-kit/
+build/
+dist/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+
+# Docker volumes (local data)
+postgres_data/
+n8n_data/
+
+# Logs
+*.log
+npm-debug.log*
+
+# Misc
+*.local
