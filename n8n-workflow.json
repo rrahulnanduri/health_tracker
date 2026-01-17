@@ -1,0 +1,541 @@
+{
+    "nodes": [
+        {
+            "parameters": {
+                "pollTimes": {
+                    "item": [
+                        {
+                            "mode": "everyMinute"
+                        },
+                        {
+                            "mode": "everyMinute"
+                        }
+                    ]
+                },
+                "triggerOn": "specificFolder",
+                "folderToWatch": {
+                    "__rl": true,
+                    "value": "19FXeYzSxHHGIsZBEsAugXvW9StERAeOQ",
+                    "mode": "list",
+                    "cachedResultName": "Healthtracker",
+                    "cachedResultUrl": "https://drive.google.com/drive/folders/19FXeYzSxHHGIsZBEsAugXvW9StERAeOQ"
+                },
+                "event": "fileCreated",
+                "options": {}
+            },
+            "type": "n8n-nodes-base.googleDriveTrigger",
+            "typeVersion": 1,
+            "position": [
+                -176,
+                0
+            ],
+            "id": "24008b36-8ad0-42a3-89df-ad9ace100b6a",
+            "name": "Google Drive Trigger",
+            "credentials": {
+                "googleDriveOAuth2Api": {
+                    "id": "m2HhRwQ3oVLNOTx4",
+                    "name": "Google Drive account"
+                }
+            }
+        },
+        {
+            "parameters": {
+                "operation": "download",
+                "fileId": {
+                    "__rl": true,
+                    "value": "={{ $json.id }}",
+                    "mode": "id"
+                },
+                "options": {
+                    "binaryPropertyName": "data"
+                }
+            },
+            "type": "n8n-nodes-base.googleDrive",
+            "typeVersion": 3,
+            "position": [
+                240,
+                0
+            ],
+            "id": "4f972f8b-583b-4149-ada7-670e2e655a5c",
+            "name": "Download file",
+            "credentials": {
+                "googleDriveOAuth2Api": {
+                    "id": "m2HhRwQ3oVLNOTx4",
+                    "name": "Google Drive account"
+                }
+            }
+        },
+        {
+            "parameters": {
+                "method": "POST",
+                "url": "http://host.docker.internal:3001/parse",
+                "sendBody": true,
+                "contentType": "multipart-form-data",
+                "bodyParameters": {
+                    "parameters": [
+                        {
+                            "parameterType": "formBinaryData",
+                            "name": "file",
+                            "inputDataFieldName": "data"
+                        }
+                    ]
+                },
+                "options": {
+                    "timeout": 300000
+                }
+            },
+            "id": "761317f5-ea94-4d46-8efd-37c66ad943e7",
+            "name": "MarkItDown Parser (via Mac)",
+            "type": "n8n-nodes-base.httpRequest",
+            "typeVersion": 4.1,
+            "position": [
+                -176,
+                288
+            ]
+        },
+        {
+            "parameters": {
+                "content": "# Ingestion\nThis flow ingests PDF's \nfrom a Google Drive folder\nand loads it into binary\nmemory for the n8n\nworkflow to continue",
+                "height": 256,
+                "width": 1536
+            },
+            "type": "n8n-nodes-base.stickyNote",
+            "position": [
+                -560,
+                -64
+            ],
+            "typeVersion": 1,
+            "id": "bca9fc3e-4c18-4134-aa78-1ecefb9d235a",
+            "name": "Sticky Note"
+        },
+        {
+            "parameters": {
+                "promptType": "define",
+                "text": "=Extract the data from this report: {{ $json.data }}",
+                "options": {
+                    "systemMessage": "You are a medical data extraction API. Extract patient information and test results from Markdown text with high precision.\nEXTRACTION RULES:\n1. Patient Name: Return in Title Case as 'Firstname Lastname'. Ignore middle names. Remove extra spaces.\n   Example: \"RAHUL KUMAR NANDURI\" → \"Rahul Nanduri\"\n2. Date: Extract the Test Date, Collection Date, or Report Date. Return in YYYY-MM-DD format.\n   Example: \"27th December 2025\" → \"2025-12-27\"\n3. Categories: Group biomarkers by their logical medical category based on what they measure. Use Title Case for category names. Be consistent - if two reports contain the same biomarker, assign it to the same category.\n   Examples of category groupings (use your medical knowledge to categorize appropriately):\n   - Blood cell counts, hemoglobin → grouped together\n   - Cholesterol, triglycerides, lipoproteins → grouped together\n   - Kidney markers like creatinine, urea → grouped together\n   - Urine test properties → grouped together\n4. Test Names: Use Title Case. Preserve standard medical abbreviations in uppercase.\n   Examples: \"haemoglobin\" → \"Haemoglobin\", \"hdl cholesterol\" → \"HDL Cholesterol\", \"rbc count\" → \"RBC Count\"\n5. Values: Remove leading/trailing spaces. For qualitative results, use Title Case.\n   Examples: \" 13.7 \" → \"13.7\", \"NEGATIVE\" → \"Negative\"\n6. Units: Use lowercase with standard formatting.\n   Examples: \"G/DL\" → \"g/dL\", \"MG/DL\" → \"mg/dL\"\nHANDLING COMPLEX TESTS:\nIf a test has multiple properties (e.g., urine color and pH), each property is a separate entry sharing the same category and test_date.\nOUTPUT FORMAT:\nReturn ONLY a raw JSON object. No markdown, no code blocks, no explanatory text.\n{\n  \"user\": {\n    \"name\": \"Firstname Lastname\",\n    \"age\": 22,\n    \"gender\": \"Male\"\n  },\n  \"metrics\": [\n    {\n      \"category\": \"Category Name\",\n      \"test_date\": \"YYYY-MM-DD\",\n      \"test_name\": \"Test Name\",\n      \"value\": \"13.7\",\n      \"unit\": \"g/dL\",\n      \"reference_range\": \"13.0 - 17.0\"\n    }\n  ]\n}"
+                }
+            },
+            "type": "@n8n/n8n-nodes-langchain.agent",
+            "typeVersion": 3.1,
+            "position": [
+                32,
+                288
+            ],
+            "id": "c49bbadc-359f-4305-838a-2b31c6b940df",
+            "name": "AI Agent"
+        },
+        {
+            "parameters": {
+                "options": {
+                    "temperature": 0
+                }
+            },
+            "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+            "typeVersion": 1,
+            "position": [
+                32,
+                464
+            ],
+            "id": "4c5f1a2a-cd5f-4818-a59c-eb9c38037786",
+            "name": "Google Gemini Chat Model",
+            "credentials": {
+                "googlePalmApi": {
+                    "id": "9xxiQQl3I8DSef9B",
+                    "name": "Google Gemini(PaLM) Api account"
+                }
+            }
+        },
+        {
+            "parameters": {
+                "jsCode": "// Utility: Normalize test name - removes extra punctuation, standardizes spacing\nfunction normalizeTestName(str) {\n  if (!str) return '';\n  \n  // Common medical abbreviations to preserve in uppercase\n  const abbreviations = [\n    'HDL', 'LDL', 'VLDL', 'RBC', 'WBC', 'WBCS', 'RBCS', 'PLT', \n    'TSH', 'T3', 'T4', 'FT3', 'FT4', 'HBA1C', 'FBS', 'PPBS', \n    'BUN', 'GFR', 'EGFR', 'ALT', 'AST', 'ALP', 'GGT', 'ESR', \n    'CRP', 'BNP', 'CK', 'CKMB', 'LDH', 'B12', 'D3', 'FSH', 'LH', \n    'PSA', 'HIV', 'HCV', 'HBV', 'PT', 'INR', 'APTT', 'MCH', \n    'MCHC', 'MCV', 'RDW', 'MPV', 'PDW', 'PCV', 'PH'\n  ];\n  \n  // Step 1: Remove hyphens, extra spaces, dots\n  let normalized = str\n    .replace(/[-–—]/g, ' ')\n    .replace(/\\.\\s*/g, ' ')\n    .replace(/\\s+/g, ' ')\n    .trim();\n  \n  // Step 2: Convert to Title Case\n  normalized = normalized\n    .toLowerCase()\n    .replace(/\\b\\w/g, c => c.toUpperCase());\n  \n  // Step 3: Restore abbreviations to uppercase\n  abbreviations.forEach(abbr => {\n    const titleCase = abbr.charAt(0).toUpperCase() + abbr.slice(1).toLowerCase();\n    const regex = new RegExp('\\\\b' + titleCase + '\\\\b', 'gi');\n    normalized = normalized.replace(regex, abbr);\n  });\n  \n  return normalized;\n}\n// Utility: Normalize user name to consistent format\nfunction normalizeName(name) {\n  if (!name) return 'Unknown';\n  return name\n    .replace(/\\s+/g, ' ')\n    .trim()\n    .split(' ')\n    .filter(word => word.length > 0)\n    .slice(0, 2)\n    .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())\n    .join(' ');\n}\n// Utility: Normalize category to standard names\nfunction normalizeCategory(category) {\n  if (!category) return 'General';\n  \n  const cat = category.toLowerCase().trim().replace(/\\s+/g, ' ');\n  \n  const categoryMap = {\n    'hematology': 'Hematology',\n    'haematology': 'Hematology',\n    'blood cell counts': 'Hematology',\n    'cbc': 'Hematology',\n    'complete blood count': 'Hematology',\n    'lipid profile': 'Lipid Profile',\n    'lipid panel': 'Lipid Profile',\n    'lipids': 'Lipid Profile',\n    'renal function test': 'Renal Function',\n    'renal function': 'Renal Function',\n    'kidney function': 'Renal Function',\n    'liver function test': 'Liver Function',\n    'liver function': 'Liver Function',\n    'thyroid profile': 'Thyroid',\n    'thyroid function': 'Thyroid',\n    'thyroid hormones': 'Thyroid',\n    'urine analysis': 'Urinalysis',\n    'urinalysis': 'Urinalysis',\n    'biochemistry': 'Biochemistry',\n    'chemistry': 'Biochemistry',\n    'blood glucose': 'Biochemistry',\n    'vitamins': 'Vitamins'\n  };\n  \n  return categoryMap[cat] || category\n    .toLowerCase()\n    .replace(/\\b\\w/g, c => c.toUpperCase());\n}\n// Parse the AI response\nconst response = JSON.parse(\n  $json.output\n    .replace(/```json/g, '')\n    .replace(/```/g, '')\n    .trim()\n);\nconst user = response.user;\nconst metrics = response.metrics;\nconst normalizedUserName = normalizeName(user.name);\nreturn metrics.map(m => ({\n  json: {\n    user_name: normalizedUserName,\n    user_age: user.age || null,\n    user_gender: (user.gender || '').charAt(0).toUpperCase() + (user.gender || '').slice(1).toLowerCase(),\n    category: normalizeCategory(m.category),\n    test_date: m.test_date,\n    test_name: normalizeTestName(m.test_name),\n    test_value: String(m.value || '').trim(),\n    test_unit: (m.unit || '').toLowerCase().trim(),\n    test_range: m.reference_range || ''\n  }\n}));"
+            },
+            "type": "n8n-nodes-base.code",
+            "typeVersion": 2,
+            "position": [
+                368,
+                288
+            ],
+            "id": "a880b45f-cfbd-4793-a7dd-d8c4c27a86b6",
+            "name": "Code in JavaScript"
+        },
+        {
+            "parameters": {
+                "content": "# Parsing\nThis flow passes the binary \nfile in memory to a MarkItDown\nFlask helper server that transforms\ninto markdown output for a Gemini\nmodel via API to process. The output\nis a large unbroken JSON array ",
+                "height": 384,
+                "width": 1104
+            },
+            "type": "n8n-nodes-base.stickyNote",
+            "position": [
+                -560,
+                224
+            ],
+            "typeVersion": 1,
+            "id": "a3e485b8-e24b-47a7-9607-c1ba6e05c76f",
+            "name": "Sticky Note1"
+        },
+        {
+            "parameters": {
+                "operation": "upsert",
+                "schema": {
+                    "__rl": true,
+                    "mode": "name",
+                    "value": "public"
+                },
+                "table": {
+                    "__rl": true,
+                    "value": "users",
+                    "mode": "list",
+                    "cachedResultName": "users"
+                },
+                "columns": {
+                    "mappingMode": "defineBelow",
+                    "value": {
+                        "name": "={{ $json.user_name }}",
+                        "gender": "={{ $json.user_gender }}",
+                        "age": "={{ $json.user_age }}"
+                    },
+                    "matchingColumns": [
+                        "name"
+                    ],
+                    "schema": [
+                        {
+                            "id": "id",
+                            "displayName": "id",
+                            "required": false,
+                            "defaultMatch": true,
+                            "display": true,
+                            "type": "number",
+                            "canBeUsedToMatch": true,
+                            "removed": true
+                        },
+                        {
+                            "id": "name",
+                            "displayName": "name",
+                            "required": false,
+                            "defaultMatch": false,
+                            "display": true,
+                            "type": "string",
+                            "canBeUsedToMatch": true,
+                            "removed": false
+                        },
+                        {
+                            "id": "age",
+                            "displayName": "age",
+                            "required": false,
+                            "defaultMatch": false,
+                            "display": true,
+                            "type": "number",
+                            "canBeUsedToMatch": false
+                        },
+                        {
+                            "id": "gender",
+                            "displayName": "gender",
+                            "required": false,
+                            "defaultMatch": false,
+                            "display": true,
+                            "type": "string",
+                            "canBeUsedToMatch": false
+                        }
+                    ],
+                    "attemptToConvertTypes": false,
+                    "convertFieldsToString": false
+                },
+                "options": {
+                    "outputColumns": [
+                        "id"
+                    ]
+                }
+            },
+            "type": "n8n-nodes-base.postgres",
+            "typeVersion": 2.6,
+            "position": [
+                -176,
+                736
+            ],
+            "id": "f5e8caff-3a68-4950-a174-8d984ea02fa4",
+            "name": "Insert or update rows in a table",
+            "credentials": {
+                "postgres": {
+                    "id": "hWVYuPItLZaz2vEv",
+                    "name": "Postgres account"
+                }
+            }
+        },
+        {
+            "parameters": {
+                "content": "# Load\nThis flow converts the JSON output \ninto SQL. The first node inserts the data\nfor a new user if applicable and the second \nnode appends the JSON test values to the \nlab_results table. ",
+                "height": 384,
+                "width": 832
+            },
+            "type": "n8n-nodes-base.stickyNote",
+            "position": [
+                -560,
+                640
+            ],
+            "typeVersion": 1,
+            "id": "164d6a91-f5b3-4279-bf20-36c98d6474d4",
+            "name": "Sticky Note2"
+        },
+        {
+            "parameters": {
+                "operation": "upsert",
+                "schema": {
+                    "__rl": true,
+                    "mode": "list",
+                    "value": "public"
+                },
+                "table": {
+                    "__rl": true,
+                    "value": "lab_metrics",
+                    "mode": "list",
+                    "cachedResultName": "lab_metrics"
+                },
+                "columns": {
+                    "mappingMode": "defineBelow",
+                    "value": {
+                        "test_date": "={{ $('Code in JavaScript').item.json.test_date }}",
+                        "category": "={{ $('Code in JavaScript').item.json.category }}",
+                        "test_value": "={{ $('Code in JavaScript').item.json.test_value }}",
+                        "test_name": "={{ $('Code in JavaScript').item.json.test_name }}",
+                        "unit": "={{ $('Code in JavaScript').item.json.test_unit }}",
+                        "ref_range": "={{ $('Code in JavaScript').item.json.test_range }}",
+                        "user_id": "={{ $json.id }}"
+                    },
+                    "matchingColumns": [
+                        "user_id",
+                        "test_name",
+                        "test_date"
+                    ],
+                    "schema": [
+                        {
+                            "id": "id",
+                            "displayName": "id",
+                            "required": false,
+                            "defaultMatch": true,
+                            "display": true,
+                            "type": "number",
+                            "canBeUsedToMatch": true,
+                            "removed": true
+                        },
+                        {
+                            "id": "user_id",
+                            "displayName": "user_id",
+                            "required": false,
+                            "defaultMatch": false,
+                            "display": true,
+                            "type": "number",
+                            "canBeUsedToMatch": true,
+                            "removed": false
+                        },
+                        {
+                            "id": "test_name",
+                            "displayName": "test_name",
+                            "required": false,
+                            "defaultMatch": false,
+                            "display": true,
+                            "type": "string",
+                            "canBeUsedToMatch": true,
+                            "removed": false
+                        },
+                        {
+                            "id": "test_value",
+                            "displayName": "test_value",
+                            "required": false,
+                            "defaultMatch": false,
+                            "display": true,
+                            "type": "string",
+                            "canBeUsedToMatch": true,
+                            "removed": false
+                        },
+                        {
+                            "id": "unit",
+                            "displayName": "unit",
+                            "required": false,
+                            "defaultMatch": false,
+                            "display": true,
+                            "type": "string",
+                            "canBeUsedToMatch": false
+                        },
+                        {
+                            "id": "ref_range",
+                            "displayName": "ref_range",
+                            "required": false,
+                            "defaultMatch": false,
+                            "display": true,
+                            "type": "string",
+                            "canBeUsedToMatch": false
+                        },
+                        {
+                            "id": "recorded_at",
+                            "displayName": "recorded_at",
+                            "required": false,
+                            "defaultMatch": false,
+                            "display": true,
+                            "type": "dateTime",
+                            "canBeUsedToMatch": false,
+                            "removed": true
+                        },
+                        {
+                            "id": "category",
+                            "displayName": "category",
+                            "required": false,
+                            "defaultMatch": false,
+                            "display": true,
+                            "type": "string",
+                            "canBeUsedToMatch": true,
+                            "removed": false
+                        },
+                        {
+                            "id": "test_date",
+                            "displayName": "test_date",
+                            "required": false,
+                            "defaultMatch": false,
+                            "display": true,
+                            "type": "dateTime",
+                            "canBeUsedToMatch": true,
+                            "removed": false
+                        }
+                    ],
+                    "attemptToConvertTypes": false,
+                    "convertFieldsToString": false
+                },
+                "options": {}
+            },
+            "type": "n8n-nodes-base.postgres",
+            "typeVersion": 2.6,
+            "position": [
+                48,
+                736
+            ],
+            "id": "4ef553ac-d99a-4931-addb-c1d28846e61f",
+            "name": "Insert or update rows in a table1",
+            "credentials": {
+                "postgres": {
+                    "id": "hWVYuPItLZaz2vEv",
+                    "name": "Postgres account"
+                }
+            }
+        },
+        {
+            "parameters": {
+                "options": {}
+            },
+            "type": "n8n-nodes-base.splitInBatches",
+            "typeVersion": 3,
+            "position": [
+                32,
+                0
+            ],
+            "id": "a978beb5-10ca-4646-8183-24a60015bd00",
+            "name": "Loop Over Items"
+        }
+    ],
+    "connections": {
+        "Google Drive Trigger": {
+            "main": [
+                [
+                    {
+                        "node": "Loop Over Items",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Download file": {
+            "main": [
+                [
+                    {
+                        "node": "MarkItDown Parser (via Mac)",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "MarkItDown Parser (via Mac)": {
+            "main": [
+                [
+                    {
+                        "node": "AI Agent",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "AI Agent": {
+            "main": [
+                [
+                    {
+                        "node": "Code in JavaScript",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Google Gemini Chat Model": {
+            "ai_languageModel": [
+                [
+                    {
+                        "node": "AI Agent",
+                        "type": "ai_languageModel",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Code in JavaScript": {
+            "main": [
+                [
+                    {
+                        "node": "Insert or update rows in a table",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Insert or update rows in a table": {
+            "main": [
+                [
+                    {
+                        "node": "Insert or update rows in a table1",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Insert or update rows in a table1": {
+            "main": [
+                [
+                    {
+                        "node": "Loop Over Items",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Loop Over Items": {
+            "main": [
+                [],
+                [
+                    {
+                        "node": "Download file",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        }
+    },
+    "pinData": {},
+    "meta": {
+        "templateCredsSetupCompleted": true,
+        "instanceId": "3b6b3113353c3283722b186abe73262670f430076f39c8bdeb698fa5cd84d087"
+    }
+}

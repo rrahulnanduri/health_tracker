@@ -46,9 +46,9 @@
     let unit = $derived(currentData[0]?.unit || "");
 
     // Chart dimensions
-    const WIDTH = 900;
-    const HEIGHT = 400;
-    const PADDING = { top: 40, right: 40, bottom: 50, left: 70 };
+    const WIDTH = 600;
+    const HEIGHT = 280;
+    const PADDING = { top: 30, right: 30, bottom: 40, left: 50 };
     const chartWidth = WIDTH - PADDING.left - PADDING.right;
     const chartHeight = HEIGHT - PADDING.top - PADDING.bottom;
 
@@ -108,6 +108,28 @@
             year: "2-digit",
         });
     }
+
+    // Y-axis tick values (dynamic step based on range)
+    let yTickValues = $derived.by(() => {
+        const range = yDomain.max - yDomain.min;
+        // Choose step to get roughly 5-8 ticks
+        let step: number;
+        if (range <= 50) step = 10;
+        else if (range <= 100) step = 20;
+        else if (range <= 200) step = 25;
+        else if (range <= 500) step = 50;
+        else if (range <= 1000) step = 100;
+        else if (range <= 2000) step = 200;
+        else step = 500;
+
+        const startTick = Math.ceil(yDomain.min / step) * step;
+        const endTick = Math.floor(yDomain.max / step) * step;
+        const ticks: number[] = [];
+        for (let v = startTick; v <= endTick; v += step) {
+            ticks.push(v);
+        }
+        return ticks;
+    });
 </script>
 
 <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
@@ -133,7 +155,7 @@
 
     <!-- Chart -->
     {#if currentData.length > 0}
-        <svg viewBox="0 0 {WIDTH} {HEIGHT}" class="w-full h-auto">
+        <svg viewBox="0 0 {WIDTH} {HEIGHT}" class="w-full max-h-[400px]">
             <!-- Reference Range Band -->
             {#if refRange}
                 <rect
@@ -169,16 +191,33 @@
                 </text>
             {/if}
 
-            <!-- Grid Lines -->
-            {#each [0, 0.25, 0.5, 0.75, 1] as tick}
+            <!-- Grid Lines with Y-Axis Tick Labels (multiples of 10) -->
+            {#each yTickValues as tickValue}
+                {@const yPos = yScale(tickValue)}
+                {@const isRefBoundary =
+                    refRange &&
+                    (Math.abs(tickValue - refRange.min) < 2 ||
+                        Math.abs(tickValue - refRange.max) < 2)}
                 <line
                     x1={PADDING.left}
-                    y1={PADDING.top + tick * chartHeight}
+                    y1={yPos}
                     x2={PADDING.left + chartWidth}
-                    y2={PADDING.top + tick * chartHeight}
+                    y2={yPos}
                     stroke="#f1f5f9"
                     stroke-width="1"
                 />
+                <!-- Y-axis tick label (skip if too close to ref range bounds) -->
+                {#if !isRefBoundary}
+                    <text
+                        x={PADDING.left - 8}
+                        y={yPos + 3}
+                        text-anchor="end"
+                        fill="#b0b8c4"
+                        font-size="6"
+                    >
+                        {tickValue}
+                    </text>
+                {/if}
             {/each}
 
             <!-- Value Line -->

@@ -28,7 +28,7 @@
     );
 
     // Configuration
-    const RADIUS = 176; // px (Original larger distance)
+    const RADIUS = 220; // px (Spaced out more)
 
     function getPosition(index: number, total: number) {
         const angle = (index / total) * 2 * Math.PI - Math.PI / 2; // Start at top
@@ -156,7 +156,7 @@
 
                     <button
                         class="w-28 h-28 rounded-full flex flex-col items-center justify-center p-2 hover:scale-110 transition-all duration-300 group cursor-pointer relative"
-                        style="animation: counter-spin 180s linear infinite;"
+                        style="animation: counter-spin 270s linear infinite;"
                         onclick={() => select(cat)}
                     >
                         <span
