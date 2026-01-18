@@ -49,7 +49,7 @@
 				Please wait for an administrator to verify your account.
 			</p>
 		</div>
-	{:else if data.metrics.length === 0}
+	{:else if !data.metrics || data.metrics.length === 0}
 		<div class="text-center">
 			<p class="text-gray-500">No lab metrics found.</p>
 		</div>

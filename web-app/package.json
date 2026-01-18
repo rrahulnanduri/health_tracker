@@ -26,11 +26,9 @@
 	},
 	"dependencies": {
 		"clerk-sveltekit": "^0.4.2",
-		"d3-scale": "^4.0.2",
-		"d3-shape": "^3.2.0",
-		"layercake": "^10.0.2",
 		"lucide-svelte": "^0.562.0",
 		"postgres": "^3.4.7",
+		"sveltekit-rate-limiter": "^0.7.0",
 		"svix": "^1.84.1"
 	}
 }

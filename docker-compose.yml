@@ -4,7 +4,7 @@ services:
     container_name: postgres_db
     environment:
       POSTGRES_USER: user
-      POSTGRES_PASSWORD: password
+      POSTGRES_PASSWORD: healthV2tracker
       POSTGRES_DB: health_db
     volumes:
       - postgres_data:/var/lib/postgresql/data
@@ -12,7 +12,7 @@ services:
     networks:
       - n8n-network
     ports:
-      - "5432:5432"
+      - "127.0.0.1:5432:5432"
 
   n8n:
     image: n8nio/n8n:latest
@@ -23,7 +23,7 @@ services:
       - DB_POSTGRESDB_HOST=postgres_db
       - DB_POSTGRESDB_PORT=5432
       - DB_POSTGRESDB_USER=user
-      - DB_POSTGRESDB_PASSWORD=password
+      - DB_POSTGRESDB_PASSWORD=healthV2tracker
       - N8N_SECURE_COOKIE=false
       - N8N_BLOCK_Nodes= # Unlocks Execute Command if needed later
     volumes:
