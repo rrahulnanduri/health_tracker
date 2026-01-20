@@ -19,7 +19,6 @@
 	});
 </script>
 
-```
 <!-- User Menu in top right corner -->
 <UserMenu />
 
@@ -109,4 +108,3 @@
 		{/if}
 	{/if}
 </div>
-```

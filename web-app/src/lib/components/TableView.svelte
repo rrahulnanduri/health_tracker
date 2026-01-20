@@ -1,17 +1,18 @@
 <script lang="ts">
+    import { SvelteSet } from "svelte/reactivity";
     import type { Metric } from "$lib/types";
-    import {
-        isMetricAbnormal,
-        parseRange,
-        normalizeMetricName,
-    } from "$lib/utils";
+    import { isMetricAbnormal } from "$lib/utils";
+    import { getReferenceRangeWithUnit } from "$lib/referenceRanges";
 
     let { groupedMetrics }: { groupedMetrics: Record<string, Metric[]> } =
         $props();
 
-    // Get all unique dates across all metrics, sorted newest first
+    // Fixed number of date columns to display
+    const NUM_DATE_COLUMNS = 3;
+
+    // Get all unique dates across all metrics, sorted oldest to newest (so newest is rightmost)
     let allDates = $derived.by(() => {
-        const dateSet = new Set<string>();
+        const dateSet = new SvelteSet<string>();
         for (const category of Object.keys(groupedMetrics)) {
             for (const metric of groupedMetrics[category]) {
                 const d = new Date(metric.test_date);
@@ -19,7 +20,10 @@
                 dateSet.add(dateKey);
             }
         }
-        return Array.from(dateSet).sort((a, b) => b.localeCompare(a)); // Newest first
+        // Sort oldest first so newest appears on the right
+        const sorted = Array.from(dateSet).sort((a, b) => a.localeCompare(b));
+        // Take only the most recent N dates
+        return sorted.slice(-NUM_DATE_COLUMNS);
     });
 
     // Format date for display (e.g., "Dec 2025")
@@ -29,6 +33,16 @@
             month: "short",
             year: "numeric",
         });
+    }
+
+    // Get reference range, falling back to database lookup if metric has none
+    function getRefRange(metric: Metric | undefined, testName: string): string {
+        if (metric?.ref_range) {
+            return metric.ref_range;
+        }
+        // Fallback to reference range database
+        const dbRange = getReferenceRangeWithUnit(testName);
+        return dbRange || "-";
     }
 
     // Build pivot structure: category -> testName -> { date: metric }
@@ -73,9 +87,8 @@
 </script>
 
 <div class="table-view-container">
-    {#each categories as category}
+    {#each categories as category (category)}
         {@const testNames = Object.keys(pivotData[category]).sort()}
-        {@const sampleMetric = groupedMetrics[category][0]}
 
         <div class="category-section">
             <div class="category-header">
@@ -84,11 +97,18 @@
 
             <div class="table-wrapper">
                 <table class="data-table">
+                    <colgroup>
+                        <col class="col-test-width" />
+                        <col class="col-range-width" />
+                        {#each allDates as _ (allDates.indexOf(_))}
+                            <col class="col-value-width" />
+                        {/each}
+                    </colgroup>
                     <thead>
                         <tr>
                             <th class="col-test">Test Description</th>
                             <th class="col-range">Reference Range</th>
-                            {#each allDates as date}
+                            {#each allDates as date (date)}
                                 <th class="col-value"
                                     >{formatDateHeader(date)}</th
                                 >
@@ -96,16 +116,18 @@
                         </tr>
                     </thead>
                     <tbody>
-                        {#each testNames as testName}
+                        {#each testNames as testName (testName)}
                             {@const dateMetrics = pivotData[category][testName]}
                             {@const firstMetric = Object.values(dateMetrics)[0]}
+                            {@const refRange = getRefRange(
+                                firstMetric,
+                                testName,
+                            )}
 
                             <tr>
                                 <td class="col-test">{testName}</td>
-                                <td class="col-range"
-                                    >{firstMetric?.ref_range || "-"}</td
-                                >
-                                {#each allDates as date}
+                                <td class="col-range">{refRange}</td>
+                                {#each allDates as date (date)}
                                     {@const metric = dateMetrics[date]}
                                     {#if metric}
                                         {@const isAbnormal =
@@ -171,6 +193,20 @@
         width: 100%;
         border-collapse: collapse;
         font-size: 0.8125rem;
+        table-layout: fixed;
+    }
+
+    /* Fixed column widths via colgroup */
+    .col-test-width {
+        width: 35%;
+    }
+
+    .col-range-width {
+        width: 20%;
+    }
+
+    .col-value-width {
+        width: 15%;
     }
 
     .data-table th,
@@ -178,6 +214,15 @@
         padding: 0.5rem 0.75rem;
         text-align: left;
         border-bottom: 1px solid #e2e8f0;
+        border-right: 1px solid #e2e8f0;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .data-table th:last-child,
+    .data-table td:last-child {
+        border-right: none;
     }
 
     .data-table thead th {
@@ -190,19 +235,15 @@
     }
 
     .col-test {
-        min-width: 200px;
-        max-width: 280px;
+        font-weight: 500;
     }
 
     .col-range {
-        min-width: 120px;
-        max-width: 180px;
         color: #64748b;
         font-size: 0.75rem;
     }
 
     .col-value {
-        min-width: 100px;
         text-align: center;
         font-weight: 500;
     }
@@ -229,6 +270,7 @@
 
     .cell-empty {
         color: #cbd5e1;
+        text-align: center;
     }
 
     .data-table tbody tr:hover {
