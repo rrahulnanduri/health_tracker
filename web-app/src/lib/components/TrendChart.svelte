@@ -34,10 +34,11 @@
             : [],
     );
 
-    // Reference range for selected test
+    // Reference range for selected test (with fallback to default ranges)
     let refRange = $derived.by(() => {
         if (currentData.length > 0) {
-            return parseRange(currentData[0].ref_range);
+            // Pass test name for fallback lookup if ref_range is empty
+            return parseRange(currentData[0].ref_range, selectedTestName);
         }
         return null;
     });

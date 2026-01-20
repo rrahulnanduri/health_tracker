@@ -1,10 +1,15 @@
 <script lang="ts">
 	import CircularMenu from "$lib/components/CircularMenu.svelte";
+	import TableView from "$lib/components/TableView.svelte";
 	import UserMenu from "$lib/components/UserMenu.svelte";
 	import { groupMetricsByCategory } from "$lib/utils";
 	import type { Metric } from "$lib/types";
+	import { LayoutGrid, Table } from "lucide-svelte";
 
 	let { data } = $props();
+
+	// View mode: "circular" (default) or "table"
+	let viewMode: "circular" | "table" = $state("circular");
 
 	let groupedMetrics = $derived.by(() => {
 		if (data.metrics && data.metrics.length > 0) {
@@ -14,8 +19,41 @@
 	});
 </script>
 
+```
 <!-- User Menu in top right corner -->
 <UserMenu />
+
+<!-- View Toggle -->
+{#if data.metrics && data.metrics.length > 0 && !data.error && !data.pendingSetup && !data.pendingVerification}
+	<div class="fixed top-4 left-1/2 -translate-x-1/2 z-50">
+		<div
+			class="flex bg-white/90 backdrop-blur-sm rounded-lg p-1 shadow-lg border border-slate-200"
+		>
+			<button
+				onclick={() => (viewMode = "circular")}
+				class="px-3 py-1.5 rounded-md text-sm font-medium transition-all flex items-center gap-1.5"
+				class:bg-indigo-600={viewMode === "circular"}
+				class:text-white={viewMode === "circular"}
+				class:text-slate-600={viewMode !== "circular"}
+				class:hover:bg-slate-100={viewMode !== "circular"}
+			>
+				<LayoutGrid class="w-4 h-4" />
+				Categorical
+			</button>
+			<button
+				onclick={() => (viewMode = "table")}
+				class="px-3 py-1.5 rounded-md text-sm font-medium transition-all flex items-center gap-1.5"
+				class:bg-indigo-600={viewMode === "table"}
+				class:text-white={viewMode === "table"}
+				class:text-slate-600={viewMode !== "table"}
+				class:hover:bg-slate-100={viewMode !== "table"}
+			>
+				<Table class="w-4 h-4" />
+				Table
+			</button>
+		</div>
+	</div>
+{/if}
 
 <div
 	class="h-screen w-screen overflow-hidden bg-white flex items-center justify-center"
@@ -62,6 +100,13 @@
 				Superuser Mode
 			</div>
 		{/if}
-		<CircularMenu {groupedMetrics} />
+
+		<!-- Conditional view based on toggle -->
+		{#if viewMode === "circular"}
+			<CircularMenu {groupedMetrics} />
+		{:else}
+			<TableView {groupedMetrics} />
+		{/if}
 	{/if}
 </div>
+```

@@ -1,0 +1,2119 @@
+{
+    "metadata": {
+        "version": "1.0",
+        "description": "Comprehensive blood work laboratory test reference ranges database",
+        "total_tests": 127,
+        "sources": [
+            "Mayo Clinic",
+            "LabCorp",
+            "Quest Diagnostics",
+            "NCEP ATP III Guidelines",
+            "IFCC Guidelines",
+            "NBME Laboratory Reference Values",
+            "NIH StatPearls",
+            "CDC Guidelines",
+            "UCSF Health",
+            "Cleveland Clinic",
+            "NHS/UK Clinical Standards",
+            "European Society of Cardiology",
+            "American College of Cardiology",
+            "Framingham Heart Study"
+        ],
+        "last_updated": "2026-01-20"
+    },
+    "tests": [
+        {
+            "id": 1,
+            "test_name": "Red Blood Cell Count",
+            "aliases": [
+                "RBC",
+                "Total RBC Count",
+                "Red Blood Cells",
+                "Erythrocyte Count"
+            ],
+            "category": "Complete Blood Count (CBC)",
+            "unit": "million cells/µL",
+            "ranges": {
+                "adult_male": {
+                    "optimal_min": 4.5,
+                    "optimal_max": 5.5,
+                    "normal_min": 4.35,
+                    "normal_max": 5.65,
+                    "critical_low": 4.0,
+                    "critical_high": 6.0
+                },
+                "adult_female": {
+                    "optimal_min": 4.0,
+                    "optimal_max": 5.0,
+                    "normal_min": 3.92,
+                    "normal_max": 5.13,
+                    "critical_low": 3.5,
+                    "critical_high": 5.5
+                }
+            }
+        },
+        {
+            "id": 2,
+            "test_name": "Hemoglobin",
+            "aliases": [
+                "Haemoglobin",
+                "Hb",
+                "Hgb"
+            ],
+            "category": "Complete Blood Count (CBC)",
+            "unit": "g/dL",
+            "ranges": {
+                "adult_male": {
+                    "optimal_min": 14.0,
+                    "optimal_max": 17.0,
+                    "normal_min": 13.5,
+                    "normal_max": 17.5,
+                    "critical_low": 7.0,
+                    "critical_high": 20.0
+                },
+                "adult_female": {
+                    "optimal_min": 12.5,
+                    "optimal_max": 15.5,
+                    "normal_min": 12.0,
+                    "normal_max": 16.0,
+                    "critical_low": 7.0,
+                    "critical_high": 18.0
+                }
+            }
+        },
+        {
+            "id": 3,
+            "test_name": "Hematocrit",
+            "aliases": [
+                "HCT",
+                "PCV",
+                "Packed Cell Volume"
+            ],
+            "category": "Complete Blood Count (CBC)",
+            "unit": "%",
+            "ranges": {
+                "adult_male": {
+                    "optimal_min": 40,
+                    "optimal_max": 50,
+                    "normal_min": 38.3,
+                    "normal_max": 48.6,
+                    "critical_low": 30,
+                    "critical_high": 55
+                },
+                "adult_female": {
+                    "optimal_min": 36,
+                    "optimal_max": 44,
+                    "normal_min": 35.5,
+                    "normal_max": 44.9,
+                    "critical_low": 28,
+                    "critical_high": 50
+                }
+            }
+        },
+        {
+            "id": 4,
+            "test_name": "White Blood Cell Count",
+            "aliases": [
+                "WBC",
+                "Total WBC Count",
+                "Leukocytes",
+                "Leukocyte Count"
+            ],
+            "category": "Complete Blood Count (CBC)",
+            "unit": "cells/µL",
+            "ranges": {
+                "adult": {
+                    "optimal_min": 5000,
+                    "optimal_max": 8000,
+                    "normal_min": 4500,
+                    "normal_max": 11000,
+                    "critical_low": 2000,
+                    "critical_high": 30000
+                }
+            }
+        },
+        {
+            "id": 5,
+            "test_name": "Platelet Count",
+            "aliases": [
+                "Platelets",
+                "PLT",
+                "Thrombocytes"
+            ],
+            "category": "Complete Blood Count (CBC)",
+            "unit": "cells/µL",
+            "ranges": {
+                "adult": {
+                    "optimal_min": 175000,
+                    "optimal_max": 300000,
+                    "normal_min": 150000,
+                    "normal_max": 400000,
+                    "critical_low": 50000,
+                    "critical_high": 1000000
+                }
+            }
+        },
+        {
+            "id": 6,
+            "test_name": "Mean Cell Volume",
+            "aliases": [
+                "MCV"
+            ],
+            "category": "Complete Blood Count (CBC)",
+            "unit": "fL",
+            "ranges": {
+                "adult": {
+                    "optimal_min": 82,
+                    "optimal_max": 94,
+                    "normal_min": 80,
+                    "normal_max": 100,
+                    "critical_low": 60,
+                    "critical_high": 120
+                }
+            }
+        },
+        {
+            "id": 7,
+            "test_name": "Mean Cell Hemoglobin",
+            "aliases": [
+                "MCH",
+                "Mean Cell Haemoglobin"
+            ],
+            "category": "Complete Blood Count (CBC)",
+            "unit": "pg",
+            "ranges": {
+                "adult": {
+                    "optimal_min": 28,
+                    "optimal_max": 32,
+                    "normal_min": 27,
+                    "normal_max": 33,
+                    "critical_low": 20,
+                    "critical_high": 40
+                }
+            }
+        },
+        {
+            "id": 8,
+            "test_name": "Mean Corpuscular Hemoglobin Concentration",
+            "aliases": [
+                "MCHC",
+                "Mean Corpuscular Hb Concn"
+            ],
+            "category": "Complete Blood Count (CBC)",
+            "unit": "g/dL",
+            "ranges": {
+                "adult": {
+                    "optimal_min": 33,
+                    "optimal_max": 35,
+                    "normal_min": 32,
+                    "normal_max": 36,
+                    "critical_low": 28,
+                    "critical_high": 40
+                }
+            }
+        },
+        {
+            "id": 9,
+            "test_name": "Red Cell Distribution Width",
+            "aliases": [
+                "RDW",
+                "RDW-CV"
+            ],
+            "category": "Complete Blood Count (CBC)",
+            "unit": "%",
+            "ranges": {
+                "adult": {
+                    "optimal_min": 11.5,
+                    "optimal_max": 13.5,
+                    "normal_min": 11.0,
+                    "normal_max": 15.0,
+                    "critical_low": null,
+                    "critical_high": 20.0
+                }
+            }
+        },
+        {
+            "id": 10,
+            "test_name": "Neutrophils",
+            "aliases": [
+                "Neutrophils %",
+                "Segs",
+                "Polys"
+            ],
+            "category": "Complete Blood Count (CBC)",
+            "unit": "%",
+            "ranges": {
+                "adult": {
+                    "optimal_min": 50,
+                    "optimal_max": 65,
+                    "normal_min": 40,
+                    "normal_max": 70,
+                    "critical_low": 20,
+                    "critical_high": 85
+                }
+            }
+        },
+        {
+            "id": 11,
+            "test_name": "Absolute Neutrophil Count",
+            "aliases": [
+                "ANC"
+            ],
+            "category": "Complete Blood Count (CBC)",
+            "unit": "cells/µL",
+            "ranges": {
+                "adult": {
+                    "optimal_min": 2500,
+                    "optimal_max": 6000,
+                    "normal_min": 1500,
+                    "normal_max": 8000,
+                    "critical_low": 500,
+                    "critical_high": 20000
+                }
+            }
+        },
+        {
+            "id": 12,
+            "test_name": "Lymphocytes",
+            "aliases": [
+                "Lymphocytes %",
+                "Lymphs"
+            ],
+            "category": "Complete Blood Count (CBC)",
+            "unit": "%",
+            "ranges": {
+                "adult": {
+                    "optimal_min": 25,
+                    "optimal_max": 35,
+                    "normal_min": 20,
+                    "normal_max": 40,
+                    "critical_low": 5,
+                    "critical_high": 70
+                }
+            }
+        },
+        {
+            "id": 13,
+            "test_name": "Absolute Lymphocyte Count",
+            "aliases": [
+                "ALC"
+            ],
+            "category": "Complete Blood Count (CBC)",
+            "unit": "cells/µL",
+            "ranges": {
+                "adult": {
+                    "optimal_min": 1200,
+                    "optimal_max": 3000,
+                    "normal_min": 1000,
+                    "normal_max": 4800,
+                    "critical_low": 500,
+                    "critical_high": 10000
+                }
+            }
+        },
+        {
+            "id": 14,
+            "test_name": "Monocytes",
+            "aliases": [
+                "Monocytes %",
+                "Monos"
+            ],
+            "category": "Complete Blood Count (CBC)",
+            "unit": "%",
+            "ranges": {
+                "adult": {
+                    "optimal_min": 4,
+                    "optimal_max": 8,
+                    "normal_min": 2,
+                    "normal_max": 10,
+                    "critical_low": null,
+                    "critical_high": 20
+                }
+            }
+        },
+        {
+            "id": 15,
+            "test_name": "Absolute Monocyte Count",
+            "aliases": [
+                "AMC"
+            ],
+            "category": "Complete Blood Count (CBC)",
+            "unit": "cells/µL",
+            "ranges": {
+                "adult": {
+                    "optimal_min": 200,
+                    "optimal_max": 600,
+                    "normal_min": 100,
+                    "normal_max": 1000,
+                    "critical_low": null,
+                    "critical_high": 2000
+                }
+            }
+        },
+        {
+            "id": 16,
+            "test_name": "Eosinophils",
+            "aliases": [
+                "Eosinophils %",
+                "Eos"
+            ],
+            "category": "Complete Blood Count (CBC)",
+            "unit": "%",
+            "ranges": {
+                "adult": {
+                    "optimal_min": 1,
+                    "optimal_max": 4,
+                    "normal_min": 1,
+                    "normal_max": 6,
+                    "critical_low": null,
+                    "critical_high": 15
+                }
+            }
+        },
+        {
+            "id": 17,
+            "test_name": "Absolute Eosinophil Count",
+            "aliases": [
+                "AEC"
+            ],
+            "category": "Complete Blood Count (CBC)",
+            "unit": "cells/µL",
+            "ranges": {
+                "adult": {
+                    "optimal_min": 50,
+                    "optimal_max": 300,
+                    "normal_min": 15,
+                    "normal_max": 500,
+                    "critical_low": null,
+                    "critical_high": 1500
+                }
+            }
+        },
+        {
+            "id": 18,
+            "test_name": "Basophils",
+            "aliases": [
+                "Basophils %",
+                "Basos"
+            ],
+            "category": "Complete Blood Count (CBC)",
+            "unit": "%",
+            "ranges": {
+                "adult": {
+                    "optimal_min": 0,
+                    "optimal_max": 1,
+                    "normal_min": 0,
+                    "normal_max": 2,
+                    "critical_low": null,
+                    "critical_high": 5
+                }
+            }
+        },
+        {
+            "id": 19,
+            "test_name": "Absolute Basophils Count",
+            "aliases": [
+                "ABC"
+            ],
+            "category": "Complete Blood Count (CBC)",
+            "unit": "cells/µL",
+            "ranges": {
+                "adult": {
+                    "optimal_min": 0,
+                    "optimal_max": 100,
+                    "normal_min": 0,
+                    "normal_max": 200,
+                    "critical_low": null,
+                    "critical_high": 500
+                }
+            }
+        },
+        {
+            "id": 20,
+            "test_name": "Total Cholesterol",
+            "aliases": [
+                "Cholesterol Total",
+                "TC",
+                "Serum Cholesterol"
+            ],
+            "category": "Lipid Panel",
+            "unit": "mg/dL",
+            "ranges": {
+                "adult": {
+                    "optimal_min": null,
+                    "optimal_max": 150,
+                    "normal_min": null,
+                    "normal_max": 200,
+                    "borderline_high": 239,
+                    "critical_high": 300
+                }
+            }
+        },
+        {
+            "id": 21,
+            "test_name": "HDL Cholesterol",
+            "aliases": [
+                "Cholesterol HDL Direct",
+                "HDL-C",
+                "Good Cholesterol"
+            ],
+            "category": "Lipid Panel",
+            "unit": "mg/dL",
+            "ranges": {
+                "adult_male": {
+                    "optimal_min": 60,
+                    "optimal_max": null,
+                    "normal_min": 40,
+                    "normal_max": null,
+                    "low_risk": 60,
+                    "critical_low": 35
+                },
+                "adult_female": {
+                    "optimal_min": 60,
+                    "optimal_max": null,
+                    "normal_min": 50,
+                    "normal_max": null,
+                    "low_risk": 60,
+                    "critical_low": 40
+                }
+            }
+        },
+        {
+            "id": 22,
+            "test_name": "LDL Cholesterol",
+            "aliases": [
+                "LDL-C",
+                "Bad Cholesterol"
+            ],
+            "category": "Lipid Panel",
+            "unit": "mg/dL",
+            "ranges": {
+                "adult": {
+                    "optimal_min": null,
+                    "optimal_max": 70,
+                    "normal_min": null,
+                    "normal_max": 100,
+                    "borderline_high": 159,
+                    "high": 189,
+                    "critical_high": 190
+                }
+            }
+        },
+        {
+            "id": 23,
+            "test_name": "VLDL Cholesterol",
+            "aliases": [
+                "VLDL-C"
+            ],
+            "category": "Lipid Panel",
+            "unit": "mg/dL",
+            "ranges": {
+                "adult": {
+                    "optimal_min": null,
+                    "optimal_max": 20,
+                    "normal_min": 5,
+                    "normal_max": 40,
+                    "critical_high": 60
+                }
+            }
+        },
+        {
+            "id": 24,
+            "test_name": "Triglycerides",
+            "aliases": [
+                "TG",
+                "Trigs"
+            ],
+            "category": "Lipid Panel",
+            "unit": "mg/dL",
+            "ranges": {
+                "adult": {
+                    "optimal_min": null,
+                    "optimal_max": 100,
+                    "normal_min": null,
+                    "normal_max": 150,
+                    "borderline_high": 199,
+                    "high": 499,
+                    "critical_high": 500
+                }
+            }
+        },
+        {
+            "id": 25,
+            "test_name": "Non-HDL Cholesterol",
+            "aliases": [
+                "Non HDL Cholesterol"
+            ],
+            "category": "Lipid Panel",
+            "unit": "mg/dL",
+            "ranges": {
+                "adult": {
+                    "optimal_min": null,
+                    "optimal_max": 100,
+                    "normal_min": null,
+                    "normal_max": 130,
+                    "borderline_high": 159,
+                    "critical_high": 190
+                }
+            }
+        },
+        {
+            "id": 26,
+            "test_name": "Cholesterol/HDL Ratio",
+            "aliases": [
+                "Chol/HDL Ratio",
+                "TC/HDL Ratio"
+            ],
+            "category": "Lipid Panel",
+            "unit": "ratio",
+            "ranges": {
+                "adult_male": {
+                    "optimal_min": null,
+                    "optimal_max": 4.0,
+                    "normal_min": null,
+                    "normal_max": 5.0,
+                    "borderline_high": 6.0,
+                    "critical_high": 7.0
+                },
+                "adult_female": {
+                    "optimal_min": null,
+                    "optimal_max": 3.5,
+                    "normal_min": null,
+                    "normal_max": 4.5,
+                    "borderline_high": 5.5,
+                    "critical_high": 6.5
+                }
+            }
+        },
+        {
+            "id": 27,
+            "test_name": "LDL/HDL Ratio",
+            "aliases": [],
+            "category": "Lipid Panel",
+            "unit": "ratio",
+            "ranges": {
+                "adult_male": {
+                    "optimal_min": null,
+                    "optimal_max": 2.5,
+                    "normal_min": null,
+                    "normal_max": 3.5,
+                    "critical_high": 4.5
+                },
+                "adult_female": {
+                    "optimal_min": null,
+                    "optimal_max": 2.0,
+                    "normal_min": null,
+                    "normal_max": 3.0,
+                    "critical_high": 4.0
+                }
+            }
+        },
+        {
+            "id": 28,
+            "test_name": "HDL/LDL Ratio",
+            "aliases": [],
+            "category": "Lipid Panel",
+            "unit": "ratio",
+            "ranges": {
+                "adult": {
+                    "optimal_min": 0.5,
+                    "optimal_max": null,
+                    "normal_min": 0.3,
+                    "normal_max": null,
+                    "critical_low": 0.2
+                }
+            }
+        },
+        {
+            "id": 29,
+            "test_name": "Fasting Glucose",
+            "aliases": [
+                "Glucose Fasting",
+                "FBS",
+                "Fasting Blood Sugar",
+                "Blood Glucose Fasting"
+            ],
+            "category": "Metabolic Panel",
+            "unit": "mg/dL",
+            "ranges": {
+                "adult": {
+                    "optimal_min": 70,
+                    "optimal_max": 85,
+                    "normal_min": 70,
+                    "normal_max": 99,
+                    "prediabetes_min": 100,
+                    "prediabetes_max": 125,
+                    "diabetes": 126,
+                    "critical_low": 50,
+                    "critical_high": 400
+                }
+            }
+        },
+        {
+            "id": 30,
+            "test_name": "HbA1c",
+            "aliases": [
+                "Glyco Hb (HBA1C)",
+                "Glycated Hemoglobin",
+                "A1C",
+                "Hemoglobin A1c"
+            ],
+            "category": "Metabolic Panel",
+            "unit": "%",
+            "ranges": {
+                "adult": {
+                    "optimal_min": null,
+                    "optimal_max": 5.4,
+                    "normal_min": null,
+                    "normal_max": 5.6,
+                    "prediabetes_min": 5.7,
+                    "prediabetes_max": 6.4,
+                    "diabetes": 6.5
+                }
+            }
+        },
+        {
+            "id": 31,
+            "test_name": "Estimated Average Glucose",
+            "aliases": [
+                "eAG"
+            ],
+            "category": "Metabolic Panel",
+            "unit": "mg/dL",
+            "ranges": {
+                "adult": {
+                    "optimal_min": null,
+                    "optimal_max": 111,
+                    "normal_min": null,
+                    "normal_max": 117,
+                    "prediabetes_max": 140,
+                    "diabetes": 154
+                }
+            }
+        },
+        {
+            "id": 32,
+            "test_name": "Calcium",
+            "aliases": [
+                "Serum Calcium",
+                "Total Calcium"
+            ],
+            "category": "Metabolic Panel",
+            "unit": "mg/dL",
+            "ranges": {
+                "adult": {
+                    "optimal_min": 9.0,
+                    "optimal_max": 10.0,
+                    "normal_min": 8.6,
+                    "normal_max": 10.3,
+                    "critical_low": 7.0,
+                    "critical_high": 12.0
+                }
+            }
+        },
+        {
+            "id": 33,
+            "test_name": "Sodium",
+            "aliases": [
+                "Na",
+                "Serum Sodium"
+            ],
+            "category": "Metabolic Panel",
+            "unit": "mEq/L",
+            "ranges": {
+                "adult": {
+                    "optimal_min": 138,
+                    "optimal_max": 142,
+                    "normal_min": 136,
+                    "normal_max": 145,
+                    "critical_low": 120,
+                    "critical_high": 160
+                }
+            }
+        },
+        {
+            "id": 34,
+            "test_name": "Potassium",
+            "aliases": [
+                "K",
+                "Serum Potassium"
+            ],
+            "category": "Metabolic Panel",
+            "unit": "mEq/L",
+            "ranges": {
+                "adult": {
+                    "optimal_min": 4.0,
+                    "optimal_max": 4.5,
+                    "normal_min": 3.5,
+                    "normal_max": 5.0,
+                    "critical_low": 2.5,
+                    "critical_high": 6.5
+                }
+            }
+        },
+        {
+            "id": 35,
+            "test_name": "Chloride",
+            "aliases": [
+                "Cl",
+                "Serum Chloride"
+            ],
+            "category": "Metabolic Panel",
+            "unit": "mEq/L",
+            "ranges": {
+                "adult": {
+                    "optimal_min": 100,
+                    "optimal_max": 104,
+                    "normal_min": 98,
+                    "normal_max": 106,
+                    "critical_low": 80,
+                    "critical_high": 120
+                }
+            }
+        },
+        {
+            "id": 36,
+            "test_name": "Creatinine",
+            "aliases": [
+                "Creatinine Serum",
+                "Serum Creatinine"
+            ],
+            "category": "Kidney Function",
+            "unit": "mg/dL",
+            "ranges": {
+                "adult_male": {
+                    "optimal_min": 0.8,
+                    "optimal_max": 1.2,
+                    "normal_min": 0.7,
+                    "normal_max": 1.3,
+                    "critical_low": 0.4,
+                    "critical_high": 10.0
+                },
+                "adult_female": {
+                    "optimal_min": 0.6,
+                    "optimal_max": 1.0,
+                    "normal_min": 0.5,
+                    "normal_max": 1.1,
+                    "critical_low": 0.3,
+                    "critical_high": 10.0
+                }
+            }
+        },
+        {
+            "id": 37,
+            "test_name": "Blood Urea Nitrogen",
+            "aliases": [
+                "BUN",
+                "Blood Urea Nitrogen BUN",
+                "Urea Nitrogen"
+            ],
+            "category": "Kidney Function",
+            "unit": "mg/dL",
+            "ranges": {
+                "adult": {
+                    "optimal_min": 10,
+                    "optimal_max": 16,
+                    "normal_min": 6,
+                    "normal_max": 20,
+                    "critical_low": 2,
+                    "critical_high": 100
+                }
+            }
+        },
+        {
+            "id": 38,
+            "test_name": "Urea",
+            "aliases": [
+                "Urea Serum",
+                "Blood Urea"
+            ],
+            "category": "Kidney Function",
+            "unit": "mg/dL",
+            "ranges": {
+                "adult": {
+                    "optimal_min": 15,
+                    "optimal_max": 35,
+                    "normal_min": 15,
+                    "normal_max": 45,
+                    "critical_low": 5,
+                    "critical_high": 200
+                }
+            }
+        },
+        {
+            "id": 39,
+            "test_name": "BUN/Creatinine Ratio",
+            "aliases": [
+                "BUN / Creatinine Ratio",
+                "Urea Creatinine Ratio",
+                "Urea/Creatinine Ratio"
+            ],
+            "category": "Kidney Function",
+            "unit": "ratio",
+            "ranges": {
+                "adult": {
+                    "optimal_min": 10,
+                    "optimal_max": 16,
+                    "normal_min": 10,
+                    "normal_max": 20,
+                    "critical_low": 5,
+                    "critical_high": 30
+                }
+            }
+        },
+        {
+            "id": 40,
+            "test_name": "Uric Acid",
+            "aliases": [
+                "Serum Uric Acid"
+            ],
+            "category": "Kidney Function",
+            "unit": "mg/dL",
+            "ranges": {
+                "adult_male": {
+                    "optimal_min": 3.5,
+                    "optimal_max": 6.0,
+                    "normal_min": 3.4,
+                    "normal_max": 7.0,
+                    "borderline_high": 8.0,
+                    "critical_high": 12.0
+                },
+                "adult_female": {
+                    "optimal_min": 2.5,
+                    "optimal_max": 5.5,
+                    "normal_min": 2.4,
+                    "normal_max": 6.0,
+                    "borderline_high": 7.0,
+                    "critical_high": 10.0
+                }
+            }
+        },
+        {
+            "id": 41,
+            "test_name": "ALT",
+            "aliases": [
+                "Alanine Transaminase (ALT/Sgpt)",
+                "SGPT",
+                "Alanine Aminotransferase"
+            ],
+            "category": "Liver Function",
+            "unit": "U/L",
+            "ranges": {
+                "adult_male": {
+                    "optimal_min": null,
+                    "optimal_max": 25,
+                    "normal_min": null,
+                    "normal_max": 41,
+                    "borderline_high": 60,
+                    "critical_high": 200
+                },
+                "adult_female": {
+                    "optimal_min": null,
+                    "optimal_max": 20,
+                    "normal_min": null,
+                    "normal_max": 33,
+                    "borderline_high": 50,
+                    "critical_high": 150
+                }
+            }
+        },
+        {
+            "id": 42,
+            "test_name": "AST",
+            "aliases": [
+                "Aspartate Aminotransferase (AST/Sgot)",
+                "SGOT",
+                "Aspartate Transaminase"
+            ],
+            "category": "Liver Function",
+            "unit": "U/L",
+            "ranges": {
+                "adult_male": {
+                    "optimal_min": null,
+                    "optimal_max": 25,
+                    "normal_min": null,
+                    "normal_max": 40,
+                    "borderline_high": 60,
+                    "critical_high": 200
+                },
+                "adult_female": {
+                    "optimal_min": null,
+                    "optimal_max": 22,
+                    "normal_min": null,
+                    "normal_max": 32,
+                    "borderline_high": 50,
+                    "critical_high": 150
+                }
+            }
+        },
+        {
+            "id": 43,
+            "test_name": "AST/ALT Ratio",
+            "aliases": [
+                "Sgot/Sgpt",
+                "De Ritis Ratio"
+            ],
+            "category": "Liver Function",
+            "unit": "ratio",
+            "ranges": {
+                "adult": {
+                    "optimal_min": 0.7,
+                    "optimal_max": 1.0,
+                    "normal_min": 0.5,
+                    "normal_max": 1.3,
+                    "alcoholic_liver_disease": 2.0
+                }
+            }
+        },
+        {
+            "id": 44,
+            "test_name": "Alkaline Phosphatase",
+            "aliases": [
+                "Alkaline Phosphatase Alpi",
+                "ALP",
+                "Alk Phos"
+            ],
+            "category": "Liver Function",
+            "unit": "U/L",
+            "ranges": {
+                "adult_male": {
+                    "optimal_min": 45,
+                    "optimal_max": 100,
+                    "normal_min": 44,
+                    "normal_max": 147,
+                    "critical_high": 500
+                },
+                "adult_female": {
+                    "optimal_min": 35,
+                    "optimal_max": 90,
+                    "normal_min": 35,
+                    "normal_max": 104,
+                    "critical_high": 400
+                }
+            }
+        },
+        {
+            "id": 45,
+            "test_name": "GGT",
+            "aliases": [
+                "GGT Gamma Glutamyl Transpeptidase",
+                "Gamma GT",
+                "Gamma-Glutamyl Transferase"
+            ],
+            "category": "Liver Function",
+            "unit": "U/L",
+            "ranges": {
+                "adult_male": {
+                    "optimal_min": null,
+                    "optimal_max": 30,
+                    "normal_min": null,
+                    "normal_max": 65,
+                    "borderline_high": 100,
+                    "critical_high": 250
+                },
+                "adult_female": {
+                    "optimal_min": null,
+                    "optimal_max": 25,
+                    "normal_min": null,
+                    "normal_max": 36,
+                    "borderline_high": 75,
+                    "critical_high": 200
+                }
+            }
+        },
+        {
+            "id": 46,
+            "test_name": "Bilirubin Total",
+            "aliases": [
+                "Total Bilirubin"
+            ],
+            "category": "Liver Function",
+            "unit": "mg/dL",
+            "ranges": {
+                "adult": {
+                    "optimal_min": 0.2,
+                    "optimal_max": 0.8,
+                    "normal_min": 0.1,
+                    "normal_max": 1.2,
+                    "borderline_high": 1.5,
+                    "critical_high": 15.0
+                }
+            }
+        },
+        {
+            "id": 47,
+            "test_name": "Bilirubin Direct",
+            "aliases": [
+                "Conjugated Bilirubin",
+                "Direct Bilirubin"
+            ],
+            "category": "Liver Function",
+            "unit": "mg/dL",
+            "ranges": {
+                "adult": {
+                    "optimal_min": 0.0,
+                    "optimal_max": 0.2,
+                    "normal_min": 0.0,
+                    "normal_max": 0.3,
+                    "critical_high": 5.0
+                }
+            }
+        },
+        {
+            "id": 48,
+            "test_name": "Bilirubin Indirect",
+            "aliases": [
+                "Unconjugated Bilirubin",
+                "Indirect Bilirubin"
+            ],
+            "category": "Liver Function",
+            "unit": "mg/dL",
+            "ranges": {
+                "adult": {
+                    "optimal_min": 0.1,
+                    "optimal_max": 0.6,
+                    "normal_min": 0.1,
+                    "normal_max": 0.9,
+                    "critical_high": 10.0
+                }
+            }
+        },
+        {
+            "id": 49,
+            "test_name": "Albumin",
+            "aliases": [
+                "Serum Albumin",
+                "Alb"
+            ],
+            "category": "Liver Function",
+            "unit": "g/dL",
+            "ranges": {
+                "adult": {
+                    "optimal_min": 4.0,
+                    "optimal_max": 5.0,
+                    "normal_min": 3.5,
+                    "normal_max": 5.0,
+                    "critical_low": 2.0,
+                    "critical_high": 6.0
+                }
+            }
+        },
+        {
+            "id": 50,
+            "test_name": "Globulin",
+            "aliases": [
+                "Serum Globulin"
+            ],
+            "category": "Liver Function",
+            "unit": "g/dL",
+            "ranges": {
+                "adult": {
+                    "optimal_min": 2.3,
+                    "optimal_max": 3.0,
+                    "normal_min": 2.0,
+                    "normal_max": 3.5,
+                    "critical_low": 1.0,
+                    "critical_high": 5.0
+                }
+            }
+        },
+        {
+            "id": 51,
+            "test_name": "Total Protein",
+            "aliases": [
+                "Serum Total Protein",
+                "TP"
+            ],
+            "category": "Liver Function",
+            "unit": "g/dL",
+            "ranges": {
+                "adult": {
+                    "optimal_min": 6.5,
+                    "optimal_max": 7.5,
+                    "normal_min": 6.0,
+                    "normal_max": 8.3,
+                    "critical_low": 4.0,
+                    "critical_high": 10.0
+                }
+            }
+        },
+        {
+            "id": 52,
+            "test_name": "A/G Ratio",
+            "aliases": [
+                "Albumin/Globulin Ratio",
+                "AG Ratio"
+            ],
+            "category": "Liver Function",
+            "unit": "ratio",
+            "ranges": {
+                "adult": {
+                    "optimal_min": 1.2,
+                    "optimal_max": 1.8,
+                    "normal_min": 1.1,
+                    "normal_max": 2.5,
+                    "critical_low": 0.5
+                }
+            }
+        },
+        {
+            "id": 53,
+            "test_name": "TSH",
+            "aliases": [
+                "TSH (Thyroid Stimulating Hormone)",
+                "Thyroid Stimulating Hormone",
+                "Thyrotropin"
+            ],
+            "category": "Thyroid Panel",
+            "unit": "mIU/L",
+            "ranges": {
+                "adult": {
+                    "optimal_min": 1.0,
+                    "optimal_max": 2.5,
+                    "normal_min": 0.4,
+                    "normal_max": 4.0,
+                    "borderline_low": 0.1,
+                    "borderline_high": 10.0,
+                    "critical_low": 0.01,
+                    "critical_high": 50.0
+                }
+            }
+        },
+        {
+            "id": 54,
+            "test_name": "T3",
+            "aliases": [
+                "T3 (Tri Iodothyronine)",
+                "Total T3",
+                "Triiodothyronine"
+            ],
+            "category": "Thyroid Panel",
+            "unit": "ng/dL",
+            "ranges": {
+                "adult": {
+                    "optimal_min": 100,
+                    "optimal_max": 160,
+                    "normal_min": 80,
+                    "normal_max": 200,
+                    "critical_low": 40,
+                    "critical_high": 400
+                }
+            }
+        },
+        {
+            "id": 55,
+            "test_name": "T4",
+            "aliases": [
+                "T4 (Thyroxne)",
+                "Total T4",
+                "Thyroxine"
+            ],
+            "category": "Thyroid Panel",
+            "unit": "µg/dL",
+            "ranges": {
+                "adult": {
+                    "optimal_min": 6.0,
+                    "optimal_max": 10.0,
+                    "normal_min": 4.5,
+                    "normal_max": 12.5,
+                    "critical_low": 2.0,
+                    "critical_high": 20.0
+                }
+            }
+        },
+        {
+            "id": 56,
+            "test_name": "Free T3",
+            "aliases": [
+                "FT3"
+            ],
+            "category": "Thyroid Panel",
+            "unit": "pg/mL",
+            "ranges": {
+                "adult": {
+                    "optimal_min": 3.0,
+                    "optimal_max": 4.0,
+                    "normal_min": 2.3,
+                    "normal_max": 4.2,
+                    "critical_low": 1.0,
+                    "critical_high": 10.0
+                }
+            }
+        },
+        {
+            "id": 57,
+            "test_name": "Free T4",
+            "aliases": [
+                "FT4"
+            ],
+            "category": "Thyroid Panel",
+            "unit": "ng/dL",
+            "ranges": {
+                "adult": {
+                    "optimal_min": 1.0,
+                    "optimal_max": 1.5,
+                    "normal_min": 0.8,
+                    "normal_max": 1.8,
+                    "critical_low": 0.3,
+                    "critical_high": 5.0
+                }
+            }
+        },
+        {
+            "id": 58,
+            "test_name": "Iron",
+            "aliases": [
+                "Serum Iron",
+                "Fe"
+            ],
+            "category": "Iron Studies",
+            "unit": "µg/dL",
+            "ranges": {
+                "adult_male": {
+                    "optimal_min": 80,
+                    "optimal_max": 150,
+                    "normal_min": 60,
+                    "normal_max": 170,
+                    "critical_low": 30,
+                    "critical_high": 300
+                },
+                "adult_female": {
+                    "optimal_min": 60,
+                    "optimal_max": 140,
+                    "normal_min": 37,
+                    "normal_max": 145,
+                    "critical_low": 20,
+                    "critical_high": 300
+                }
+            }
+        },
+        {
+            "id": 59,
+            "test_name": "TIBC",
+            "aliases": [
+                "Tibc",
+                "Total Iron Binding Capacity"
+            ],
+            "category": "Iron Studies",
+            "unit": "µg/dL",
+            "ranges": {
+                "adult": {
+                    "optimal_min": 280,
+                    "optimal_max": 350,
+                    "normal_min": 250,
+                    "normal_max": 400,
+                    "critical_low": 150,
+                    "critical_high": 500
+                }
+            }
+        },
+        {
+            "id": 60,
+            "test_name": "UIBC",
+            "aliases": [
+                "Uibc",
+                "Unsaturated Iron Binding Capacity"
+            ],
+            "category": "Iron Studies",
+            "unit": "µg/dL",
+            "ranges": {
+                "adult": {
+                    "optimal_min": 150,
+                    "optimal_max": 280,
+                    "normal_min": 100,
+                    "normal_max": 350
+                }
+            }
+        },
+        {
+            "id": 61,
+            "test_name": "Transferrin",
+            "aliases": [
+                "Serum Transferrin"
+            ],
+            "category": "Iron Studies",
+            "unit": "mg/dL",
+            "ranges": {
+                "adult": {
+                    "optimal_min": 220,
+                    "optimal_max": 340,
+                    "normal_min": 200,
+                    "normal_max": 360,
+                    "critical_low": 100,
+                    "critical_high": 500
+                }
+            }
+        },
+        {
+            "id": 62,
+            "test_name": "Transferrin Saturation",
+            "aliases": [
+                "TSAT",
+                "Iron Saturation"
+            ],
+            "category": "Iron Studies",
+            "unit": "%",
+            "ranges": {
+                "adult_male": {
+                    "optimal_min": 25,
+                    "optimal_max": 40,
+                    "normal_min": 20,
+                    "normal_max": 50,
+                    "critical_low": 10,
+                    "critical_high": 70
+                },
+                "adult_female": {
+                    "optimal_min": 20,
+                    "optimal_max": 35,
+                    "normal_min": 15,
+                    "normal_max": 50,
+                    "critical_low": 8,
+                    "critical_high": 70
+                }
+            }
+        },
+        {
+            "id": 63,
+            "test_name": "Ferritin",
+            "aliases": [
+                "Serum Ferritin"
+            ],
+            "category": "Iron Studies",
+            "unit": "ng/mL",
+            "ranges": {
+                "adult_male": {
+                    "optimal_min": 50,
+                    "optimal_max": 150,
+                    "normal_min": 30,
+                    "normal_max": 400,
+                    "critical_low": 12,
+                    "critical_high": 1000
+                },
+                "adult_female": {
+                    "optimal_min": 30,
+                    "optimal_max": 120,
+                    "normal_min": 15,
+                    "normal_max": 150,
+                    "critical_low": 10,
+                    "critical_high": 500
+                }
+            }
+        },
+        {
+            "id": 64,
+            "test_name": "Vitamin D",
+            "aliases": [
+                "VITAMIN D 25 HYDROXY",
+                "25-Hydroxy Vitamin D",
+                "25(OH)D",
+                "Vitamin D 25-OH"
+            ],
+            "category": "Vitamins",
+            "unit": "ng/mL",
+            "ranges": {
+                "adult": {
+                    "optimal_min": 40,
+                    "optimal_max": 60,
+                    "normal_min": 30,
+                    "normal_max": 100,
+                    "insufficient_min": 20,
+                    "insufficient_max": 29,
+                    "deficient": 20,
+                    "toxic": 150
+                }
+            }
+        },
+        {
+            "id": 65,
+            "test_name": "Vitamin B12",
+            "aliases": [
+                "Vitamin B12 Cyanocobalamin",
+                "Cobalamin",
+                "Cyanocobalamin"
+            ],
+            "category": "Vitamins",
+            "unit": "pg/mL",
+            "ranges": {
+                "adult": {
+                    "optimal_min": 500,
+                    "optimal_max": 900,
+                    "normal_min": 200,
+                    "normal_max": 1100,
+                    "borderline_low": 200,
+                    "deficient": 150,
+                    "critical_low": 100
+                }
+            }
+        },
+        {
+            "id": 66,
+            "test_name": "Folate",
+            "aliases": [
+                "Folic Acid",
+                "Serum Folate",
+                "Vitamin B9"
+            ],
+            "category": "Vitamins",
+            "unit": "ng/mL",
+            "ranges": {
+                "adult": {
+                    "optimal_min": 10,
+                    "optimal_max": 20,
+                    "normal_min": 3,
+                    "normal_max": 20,
+                    "borderline_low": 3,
+                    "deficient": 2
+                }
+            }
+        },
+        {
+            "id": 67,
+            "test_name": "Urine pH",
+            "aliases": [
+                "Reaction (PH)",
+                "Urinary pH"
+            ],
+            "category": "Urinalysis",
+            "unit": "pH units",
+            "ranges": {
+                "adult": {
+                    "optimal_min": 6.0,
+                    "optimal_max": 7.0,
+                    "normal_min": 4.5,
+                    "normal_max": 8.0
+                }
+            }
+        },
+        {
+            "id": 68,
+            "test_name": "Urine Specific Gravity",
+            "aliases": [
+                "Specific Gravity",
+                "SG"
+            ],
+            "category": "Urinalysis",
+            "unit": "ratio",
+            "ranges": {
+                "adult": {
+                    "optimal_min": 1.010,
+                    "optimal_max": 1.020,
+                    "normal_min": 1.005,
+                    "normal_max": 1.030
+                }
+            }
+        },
+        {
+            "id": 69,
+            "test_name": "Urine Protein",
+            "aliases": [
+                "Urine Protein (Albumin)",
+                "Urinary Protein",
+                "Proteinuria"
+            ],
+            "category": "Urinalysis",
+            "unit": "qualitative",
+            "ranges": {
+                "adult": {
+                    "normal": "Negative",
+                    "trace": "Trace",
+                    "abnormal": "1+ or higher"
+                }
+            }
+        },
+        {
+            "id": 70,
+            "test_name": "Urine Glucose",
+            "aliases": [
+                "Urine Glucose (Sugar)",
+                "Glycosuria"
+            ],
+            "category": "Urinalysis",
+            "unit": "qualitative",
+            "ranges": {
+                "adult": {
+                    "normal": "Negative",
+                    "abnormal": "Positive"
+                }
+            }
+        },
+        {
+            "id": 71,
+            "test_name": "Urine Ketones",
+            "aliases": [
+                "Urine Ketones (Acetone)",
+                "Ketonuria"
+            ],
+            "category": "Urinalysis",
+            "unit": "qualitative",
+            "ranges": {
+                "adult": {
+                    "normal": "Negative",
+                    "abnormal": "Positive"
+                }
+            }
+        },
+        {
+            "id": 72,
+            "test_name": "Urine Bilirubin",
+            "aliases": [
+                "Bilirubin (Urine)",
+                "Bilirubinuria"
+            ],
+            "category": "Urinalysis",
+            "unit": "qualitative",
+            "ranges": {
+                "adult": {
+                    "normal": "Negative",
+                    "abnormal": "Positive"
+                }
+            }
+        },
+        {
+            "id": 73,
+            "test_name": "Urobilinogen",
+            "aliases": [
+                "Urine Urobilinogen"
+            ],
+            "category": "Urinalysis",
+            "unit": "EU/dL",
+            "ranges": {
+                "adult": {
+                    "normal_min": 0.2,
+                    "normal_max": 1.0,
+                    "elevated": 2.0
+                }
+            }
+        },
+        {
+            "id": 74,
+            "test_name": "Urine Blood",
+            "aliases": [
+                "Blood",
+                "Hematuria"
+            ],
+            "category": "Urinalysis",
+            "unit": "qualitative",
+            "ranges": {
+                "adult": {
+                    "normal": "Negative",
+                    "abnormal": "Positive"
+                }
+            }
+        },
+        {
+            "id": 75,
+            "test_name": "Urine Nitrites",
+            "aliases": [
+                "Nitrites"
+            ],
+            "category": "Urinalysis",
+            "unit": "qualitative",
+            "ranges": {
+                "adult": {
+                    "normal": "Negative",
+                    "abnormal_suggests_UTI": "Positive"
+                }
+            }
+        },
+        {
+            "id": 76,
+            "test_name": "Urine Leukocytes",
+            "aliases": [
+                "Leukocytes",
+                "WBC (Urine)"
+            ],
+            "category": "Urinalysis",
+            "unit": "qualitative",
+            "ranges": {
+                "adult": {
+                    "normal": "Negative",
+                    "abnormal": "Positive"
+                }
+            }
+        },
+        {
+            "id": 77,
+            "test_name": "Urine RBC",
+            "aliases": [
+                "RBC (Urine)",
+                "Red Blood Cells (Urine)"
+            ],
+            "category": "Urinalysis",
+            "unit": "cells/HPF",
+            "ranges": {
+                "adult": {
+                    "normal_min": 0,
+                    "normal_max": 4,
+                    "abnormal": 5
+                }
+            }
+        },
+        {
+            "id": 78,
+            "test_name": "Urine WBC",
+            "aliases": [
+                "WBC (Urine)",
+                "Pus Cells (WBCS)",
+                "White Blood Cells (Urine)"
+            ],
+            "category": "Urinalysis",
+            "unit": "cells/HPF",
+            "ranges": {
+                "adult": {
+                    "normal_min": 0,
+                    "normal_max": 5,
+                    "abnormal": 10
+                }
+            }
+        },
+        {
+            "id": 79,
+            "test_name": "Epithelial Cells",
+            "aliases": [
+                "Urine Epithelial Cells"
+            ],
+            "category": "Urinalysis",
+            "unit": "cells/HPF",
+            "ranges": {
+                "adult": {
+                    "normal_min": 0,
+                    "normal_max": 5,
+                    "borderline": 10,
+                    "abnormal": 15
+                }
+            }
+        },
+        {
+            "id": 80,
+            "test_name": "Urine Casts",
+            "aliases": [
+                "Cast",
+                "Urinary Casts"
+            ],
+            "category": "Urinalysis",
+            "unit": "qualitative/HPF",
+            "ranges": {
+                "adult": {
+                    "normal": "None or rare hyaline",
+                    "abnormal": "Granular, cellular, or waxy casts"
+                }
+            }
+        },
+        {
+            "id": 81,
+            "test_name": "Urine Crystals",
+            "aliases": [
+                "Crystals"
+            ],
+            "category": "Urinalysis",
+            "unit": "qualitative",
+            "ranges": {
+                "adult": {
+                    "normal": "None or few",
+                    "abnormal": "Many or pathological types"
+                }
+            }
+        },
+        {
+            "id": 82,
+            "test_name": "Bacteria/Yeast",
+            "aliases": [
+                "Bacteria/ Yeast Cells",
+                "Urine Bacteria"
+            ],
+            "category": "Urinalysis",
+            "unit": "qualitative",
+            "ranges": {
+                "adult": {
+                    "normal": "None",
+                    "abnormal": "Present"
+                }
+            }
+        },
+        {
+            "id": 83,
+            "test_name": "Urine Colour",
+            "aliases": [
+                "Colour",
+                "Urine Color"
+            ],
+            "category": "Urinalysis",
+            "unit": "qualitative",
+            "ranges": {
+                "adult": {
+                    "normal": "Pale Yellow to Amber",
+                    "abnormal": "Red, Brown, Dark, Cloudy"
+                }
+            }
+        },
+        {
+            "id": 84,
+            "test_name": "Urine Transparency",
+            "aliases": [
+                "Transparency (Appearance)",
+                "Clarity"
+            ],
+            "category": "Urinalysis",
+            "unit": "qualitative",
+            "ranges": {
+                "adult": {
+                    "normal": "Clear",
+                    "abnormal": "Cloudy, Turbid, Hazy"
+                }
+            }
+        },
+        {
+            "id": 85,
+            "test_name": "Urine Volume",
+            "aliases": [
+                "Volume"
+            ],
+            "category": "Urinalysis",
+            "unit": "mL/24hr",
+            "ranges": {
+                "adult": {
+                    "normal_min": 800,
+                    "normal_max": 2000,
+                    "oliguria": 400,
+                    "polyuria": 2500
+                }
+            }
+        },
+        {
+            "id": 86,
+            "test_name": "CRP",
+            "aliases": [
+                "C-Reactive Protein",
+                "hs-CRP",
+                "High Sensitivity CRP"
+            ],
+            "category": "Inflammatory Markers",
+            "unit": "mg/L",
+            "ranges": {
+                "adult": {
+                    "optimal_min": null,
+                    "optimal_max": 1.0,
+                    "normal_min": null,
+                    "normal_max": 3.0,
+                    "borderline_high": 10.0,
+                    "elevated": 10.0,
+                    "very_high": 50.0
+                }
+            }
+        },
+        {
+            "id": 87,
+            "test_name": "ESR",
+            "aliases": [
+                "Erythrocyte Sedimentation Rate",
+                "Sed Rate"
+            ],
+            "category": "Inflammatory Markers",
+            "unit": "mm/hr",
+            "ranges": {
+                "adult_male_under_50": {
+                    "optimal_min": null,
+                    "optimal_max": 10,
+                    "normal_min": null,
+                    "normal_max": 15,
+                    "borderline_high": 20
+                },
+                "adult_male_over_50": {
+                    "optimal_min": null,
+                    "optimal_max": 15,
+                    "normal_min": null,
+                    "normal_max": 20,
+                    "borderline_high": 30
+                },
+                "adult_female_under_50": {
+                    "optimal_min": null,
+                    "optimal_max": 15,
+                    "normal_min": null,
+                    "normal_max": 20,
+                    "borderline_high": 30
+                },
+                "adult_female_over_50": {
+                    "optimal_min": null,
+                    "optimal_max": 20,
+                    "normal_min": null,
+                    "normal_max": 30,
+                    "borderline_high": 40
+                }
+            }
+        },
+        {
+            "id": 88,
+            "test_name": "Homocysteine",
+            "aliases": [
+                "Serum Homocysteine",
+                "Plasma Homocysteine"
+            ],
+            "category": "Cardiovascular Risk",
+            "unit": "µmol/L",
+            "ranges": {
+                "adult": {
+                    "optimal_min": null,
+                    "optimal_max": 8.0,
+                    "normal_min": 5.0,
+                    "normal_max": 15.0,
+                    "borderline_high": 15.0,
+                    "elevated": 30.0,
+                    "severe": 100.0
+                }
+            }
+        },
+        {
+            "id": 89,
+            "test_name": "Testosterone Total",
+            "aliases": [
+                "Total Testosterone",
+                "Serum Testosterone"
+            ],
+            "category": "Hormones",
+            "unit": "ng/dL",
+            "ranges": {
+                "adult_male": {
+                    "optimal_min": 500,
+                    "optimal_max": 900,
+                    "normal_min": 270,
+                    "normal_max": 1070,
+                    "low": 270,
+                    "critical_low": 200
+                },
+                "adult_female": {
+                    "optimal_min": 15,
+                    "optimal_max": 50,
+                    "normal_min": 15,
+                    "normal_max": 70,
+                    "elevated": 70
+                }
+            }
+        },
+        {
+            "id": 90,
+            "test_name": "Testosterone Free",
+            "aliases": [
+                "Free Testosterone"
+            ],
+            "category": "Hormones",
+            "unit": "pg/mL",
+            "ranges": {
+                "adult_male_20_29": {
+                    "normal_min": 9.3,
+                    "normal_max": 26.5
+                },
+                "adult_male_30_39": {
+                    "normal_min": 8.7,
+                    "normal_max": 25.1
+                },
+                "adult_male_40_49": {
+                    "normal_min": 6.8,
+                    "normal_max": 21.5
+                },
+                "adult_male_50_59": {
+                    "normal_min": 7.2,
+                    "normal_max": 24.0
+                },
+                "adult_female": {
+                    "normal_min": 0.2,
+                    "normal_max": 5.0
+                }
+            }
+        },
+        {
+            "id": 91,
+            "test_name": "Estradiol",
+            "aliases": [
+                "E2",
+                "Serum Estradiol"
+            ],
+            "category": "Hormones",
+            "unit": "pg/mL",
+            "ranges": {
+                "adult_male": {
+                    "normal_min": 10,
+                    "normal_max": 40,
+                    "elevated": 60
+                },
+                "adult_female_follicular": {
+                    "normal_min": 12,
+                    "normal_max": 233
+                },
+                "adult_female_ovulation": {
+                    "normal_min": 41,
+                    "normal_max": 398
+                },
+                "adult_female_luteal": {
+                    "normal_min": 22,
+                    "normal_max": 341
+                },
+                "adult_female_postmenopausal": {
+                    "normal_min": null,
+                    "normal_max": 30
+                }
+            }
+        },
+        {
+            "id": 92,
+            "test_name": "Cortisol AM",
+            "aliases": [
+                "Morning Cortisol",
+                "Serum Cortisol AM"
+            ],
+            "category": "Hormones",
+            "unit": "µg/dL",
+            "ranges": {
+                "adult_morning": {
+                    "optimal_min": 10,
+                    "optimal_max": 18,
+                    "normal_min": 6.2,
+                    "normal_max": 19.4,
+                    "critical_low": 3.0,
+                    "critical_high": 30.0
+                }
+            }
+        },
+        {
+            "id": 93,
+            "test_name": "DHEA-S",
+            "aliases": [
+                "Dehydroepiandrosterone Sulfate",
+                "DHEAS"
+            ],
+            "category": "Hormones",
+            "unit": "µg/dL",
+            "ranges": {
+                "adult_male_20_29": {
+                    "normal_min": 280,
+                    "normal_max": 640
+                },
+                "adult_male_30_39": {
+                    "normal_min": 120,
+                    "normal_max": 520
+                },
+                "adult_male_40_49": {
+                    "normal_min": 95,
+                    "normal_max": 530
+                },
+                "adult_male_50_59": {
+                    "normal_min": 70,
+                    "normal_max": 310
+                },
+                "adult_female_20_29": {
+                    "normal_min": 65,
+                    "normal_max": 380
+                },
+                "adult_female_30_39": {
+                    "normal_min": 45,
+                    "normal_max": 270
+                },
+                "adult_female_40_49": {
+                    "normal_min": 32,
+                    "normal_max": 240
+                },
+                "adult_female_50_59": {
+                    "normal_min": 26,
+                    "normal_max": 200
+                }
+            }
+        },
+        {
+            "id": 94,
+            "test_name": "Insulin Fasting",
+            "aliases": [
+                "Fasting Insulin",
+                "Serum Insulin"
+            ],
+            "category": "Metabolic Panel",
+            "unit": "µIU/mL",
+            "ranges": {
+                "adult": {
+                    "optimal_min": 2,
+                    "optimal_max": 6,
+                    "normal_min": 2.6,
+                    "normal_max": 25,
+                    "insulin_resistant": 25,
+                    "elevated": 50
+                }
+            }
+        },
+        {
+            "id": 95,
+            "test_name": "C-Peptide",
+            "aliases": [
+                "Connecting Peptide"
+            ],
+            "category": "Metabolic Panel",
+            "unit": "ng/mL",
+            "ranges": {
+                "adult_fasting": {
+                    "optimal_min": 1.0,
+                    "optimal_max": 2.0,
+                    "normal_min": 0.8,
+                    "normal_max": 3.1,
+                    "critical_low": 0.5
+                }
+            }
+        },
+        {
+            "id": 96,
+            "test_name": "Magnesium",
+            "aliases": [
+                "Serum Magnesium",
+                "Mg"
+            ],
+            "category": "Metabolic Panel",
+            "unit": "mg/dL",
+            "ranges": {
+                "adult": {
+                    "optimal_min": 2.0,
+                    "optimal_max": 2.4,
+                    "normal_min": 1.7,
+                    "normal_max": 2.6,
+                    "critical_low": 1.0,
+                    "critical_high": 4.0
+                }
+            }
+        },
+        {
+            "id": 97,
+            "test_name": "Phosphorus",
+            "aliases": [
+                "Serum Phosphorus",
+                "Phosphate",
+                "PO4"
+            ],
+            "category": "Metabolic Panel",
+            "unit": "mg/dL",
+            "ranges": {
+                "adult": {
+                    "optimal_min": 3.0,
+                    "optimal_max": 4.0,
+                    "normal_min": 2.5,
+                    "normal_max": 4.5,
+                    "critical_low": 1.0,
+                    "critical_high": 8.0
+                }
+            }
+        },
+        {
+            "id": 98,
+            "test_name": "eGFR",
+            "aliases": [
+                "Estimated Glomerular Filtration Rate",
+                "GFR"
+            ],
+            "category": "Kidney Function",
+            "unit": "mL/min/1.73m²",
+            "ranges": {
+                "adult": {
+                    "normal": 90,
+                    "mild_decrease": 60,
+                    "moderate_decrease": 30,
+                    "severe_decrease": 15,
+                    "kidney_failure": 15
+                }
+            }
+        }
+    ]
+}
