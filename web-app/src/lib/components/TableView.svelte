@@ -2,15 +2,22 @@
     import { SvelteSet } from "svelte/reactivity";
     import type { Metric } from "$lib/types";
     import { isMetricAbnormal } from "$lib/utils";
-    import { getReferenceRangeWithUnit } from "$lib/referenceRanges";
 
-    let { groupedMetrics }: { groupedMetrics: Record<string, Metric[]> } =
-        $props();
+    interface Props {
+        groupedMetrics: Record<string, Metric[]>;
+        onTestClick?: (
+            testName: string,
+            category: string,
+            metrics: Metric[],
+        ) => void;
+    }
+
+    let { groupedMetrics, onTestClick }: Props = $props();
 
     // Fixed number of date columns to display
     const NUM_DATE_COLUMNS = 3;
 
-    // Get all unique dates across all metrics, sorted oldest to newest (so newest is rightmost)
+    // Get all unique dates across all metrics, sorted newest to oldest (oldest on right)
     let allDates = $derived.by(() => {
         const dateSet = new SvelteSet<string>();
         for (const category of Object.keys(groupedMetrics)) {
@@ -20,10 +27,10 @@
                 dateSet.add(dateKey);
             }
         }
-        // Sort oldest first so newest appears on the right
-        const sorted = Array.from(dateSet).sort((a, b) => a.localeCompare(b));
+        // Sort newest first (so oldest is on the right)
+        const sorted = Array.from(dateSet).sort((a, b) => b.localeCompare(a));
         // Take only the most recent N dates
-        return sorted.slice(-NUM_DATE_COLUMNS);
+        return sorted.slice(0, NUM_DATE_COLUMNS);
     });
 
     // Format date for display (e.g., "Dec 2025")
@@ -35,22 +42,15 @@
         });
     }
 
-    // Normalize reference range format: ensure "X - Y" spacing
-    function normalizeRefRange(range: string): string {
-        if (!range || range === "-") return range;
-        // Replace various dash formats with consistent " - " spacing
-        // Handles: "3.5-5", "3.5 -5", "3.5- 5", "3.5  -  5" → "3.5 - 5"
-        return range.replace(/\s*[-–—]\s*/g, " - ").trim();
-    }
-
-    // Get reference range, falling back to database lookup if metric has none
-    function getRefRange(metric: Metric | undefined, testName: string): string {
-        if (metric?.ref_range) {
-            return normalizeRefRange(metric.ref_range);
+    // Handle click on a test row
+    function handleTestClick(testName: string, category: string) {
+        if (onTestClick) {
+            // Get all metrics for this test name within the category
+            const metrics = groupedMetrics[category].filter(
+                (m) => m.test_name === testName,
+            );
+            onTestClick(testName, category, metrics);
         }
-        // Fallback to reference range database
-        const dbRange = getReferenceRangeWithUnit(testName);
-        return dbRange ? normalizeRefRange(dbRange) : "-";
     }
 
     // Build pivot structure: category -> testName -> { date: metric }
@@ -107,7 +107,6 @@
                 <table class="data-table">
                     <colgroup>
                         <col class="col-test-width" />
-                        <col class="col-range-width" />
                         {#each allDates as _ (allDates.indexOf(_))}
                             <col class="col-value-width" />
                         {/each}
@@ -115,7 +114,6 @@
                     <thead>
                         <tr>
                             <th class="col-test">Test Description</th>
-                            <th class="col-range">Reference Range</th>
                             {#each allDates as date (date)}
                                 <th class="col-value"
                                     >{formatDateHeader(date)}</th
@@ -126,15 +124,13 @@
                     <tbody>
                         {#each testNames as testName (testName)}
                             {@const dateMetrics = pivotData[category][testName]}
-                            {@const firstMetric = Object.values(dateMetrics)[0]}
-                            {@const refRange = getRefRange(
-                                firstMetric,
-                                testName,
-                            )}
 
-                            <tr>
+                            <tr
+                                class="clickable-row"
+                                onclick={() =>
+                                    handleTestClick(testName, category)}
+                            >
                                 <td class="col-test">{testName}</td>
-                                <td class="col-range">{refRange}</td>
                                 {#each allDates as date (date)}
                                     {@const metric = dateMetrics[date]}
                                     {#if metric}
@@ -206,15 +202,11 @@
 
     /* Fixed column widths via colgroup */
     .col-test-width {
-        width: 35%;
-    }
-
-    .col-range-width {
-        width: 20%;
+        width: 40%;
     }
 
     .col-value-width {
-        width: 15%;
+        width: 20%;
     }
 
     .data-table th,
@@ -244,11 +236,6 @@
 
     .col-test {
         font-weight: 500;
-    }
-
-    .col-range {
-        color: #64748b;
-        font-size: 0.75rem;
     }
 
     .col-value {
@@ -281,8 +268,17 @@
         text-align: center;
     }
 
-    .data-table tbody tr:hover {
-        background: #f8fafc;
+    .clickable-row {
+        cursor: pointer;
+        transition: background-color 0.15s ease;
+    }
+
+    .clickable-row:hover {
+        background: #f1f5f9;
+    }
+
+    .clickable-row:active {
+        background: #e2e8f0;
     }
 
     .data-table tbody tr:last-child td {
