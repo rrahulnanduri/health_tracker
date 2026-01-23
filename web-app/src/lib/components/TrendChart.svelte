@@ -1,6 +1,7 @@
 <script lang="ts">
     import type { Metric } from "$lib/types";
     import { parseRange, groupMetricsByTestName } from "$lib/utils";
+    import { TrendingUp, TrendingDown, Minus } from "lucide-svelte";
 
     let { allMetrics }: { allMetrics: Metric[] } = $props();
 
@@ -25,14 +26,54 @@
         }
     });
 
-    // Data for selected test
+    // Data for selected test (sorted by date, oldest first)
     let currentData = $derived(
         selectedTestName && groupedByTest[selectedTestName]
-            ? groupedByTest[selectedTestName].filter(
-                  (m) => typeof m.test_value === "number",
-              )
+            ? groupedByTest[selectedTestName]
+                  .filter((m) => typeof m.test_value === "number")
+                  .sort(
+                      (a, b) =>
+                          new Date(a.test_date).getTime() -
+                          new Date(b.test_date).getTime(),
+                  )
             : [],
     );
+
+    // Available dates for baseline selection (all except the latest)
+    let availableBaselines = $derived(
+        currentData.length > 1 ? currentData.slice(0, -1) : [],
+    );
+
+    // Selected baseline index (default to first/oldest date)
+    let baselineIndex = $state(0);
+
+    // Reset baseline when test changes
+    $effect(() => {
+        if (selectedTestName) {
+            baselineIndex = 0;
+        }
+    });
+
+    // Calculate percentage change
+    let percentageChange = $derived.by(() => {
+        if (currentData.length < 2 || baselineIndex >= currentData.length - 1) {
+            return null;
+        }
+        const baselineValue = currentData[baselineIndex].test_value as number;
+        const latestValue = currentData[currentData.length - 1]
+            .test_value as number;
+
+        if (baselineValue === 0) return null;
+
+        const change = ((latestValue - baselineValue) / baselineValue) * 100;
+        return {
+            value: change,
+            baselineDate: currentData[baselineIndex].test_date,
+            latestDate: currentData[currentData.length - 1].test_date,
+            baselineValue,
+            latestValue,
+        };
+    });
 
     // Reference range for selected test (with fallback to default ranges)
     let refRange = $derived.by(() => {
@@ -110,6 +151,14 @@
         });
     }
 
+    function formatShortDate(d: Date | string) {
+        const date = new Date(d);
+        return date.toLocaleDateString("en-US", {
+            month: "short",
+            year: "2-digit",
+        });
+    }
+
     // Y-axis tick values (dynamic step based on range)
     let yTickValues = $derived.by(() => {
         const range = yDomain.max - yDomain.min;
@@ -144,15 +193,64 @@
                 Select a biomarker to view its history
             </p>
         </div>
-        <select
-            bind:value={selectedTestName}
-            class="px-4 py-2 border border-slate-300 rounded-lg text-sm font-medium text-slate-700 bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-        >
-            {#each availableTests as testName}
-                <option value={testName}>{testName}</option>
-            {/each}
-        </select>
+        <div class="flex items-center gap-3">
+            <!-- Percentage Change Indicator -->
+            {#if percentageChange !== null}
+                <div
+                    class="flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-medium"
+                    class:bg-green-50={percentageChange.value < 0}
+                    class:text-green-700={percentageChange.value < 0}
+                    class:bg-red-50={percentageChange.value > 0}
+                    class:text-red-700={percentageChange.value > 0}
+                    class:bg-slate-100={percentageChange.value === 0}
+                    class:text-slate-600={percentageChange.value === 0}
+                >
+                    {#if percentageChange.value > 0}
+                        <TrendingUp class="w-4 h-4" />
+                        <span>+{percentageChange.value.toFixed(1)}%</span>
+                    {:else if percentageChange.value < 0}
+                        <TrendingDown class="w-4 h-4" />
+                        <span>{percentageChange.value.toFixed(1)}%</span>
+                    {:else}
+                        <Minus class="w-4 h-4" />
+                        <span>No change</span>
+                    {/if}
+                </div>
+            {/if}
+
+            <select
+                bind:value={selectedTestName}
+                class="px-4 py-2 border border-slate-300 rounded-lg text-sm font-medium text-slate-700 bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+            >
+                {#each availableTests as testName}
+                    <option value={testName}>{testName}</option>
+                {/each}
+            </select>
+        </div>
     </div>
+
+    <!-- Baseline Selector (only show if more than 2 dates) -->
+    {#if availableBaselines.length > 1}
+        <div class="flex items-center gap-2 mb-4 text-sm text-slate-600">
+            <span>Compare to:</span>
+            <select
+                bind:value={baselineIndex}
+                class="px-2 py-1 border border-slate-200 rounded text-sm bg-slate-50 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+            >
+                {#each availableBaselines as baseline, i}
+                    <option value={i}
+                        >{formatShortDate(baseline.test_date)}</option
+                    >
+                {/each}
+            </select>
+            <span class="text-slate-400">→</span>
+            <span class="font-medium text-slate-700">
+                {formatShortDate(
+                    currentData[currentData.length - 1]?.test_date || "",
+                )}
+            </span>
+        </div>
+    {/if}
 
     <!-- Chart -->
     {#if currentData.length > 0}
@@ -233,11 +331,19 @@
 
             <!-- Data Points -->
             {#each currentData as dataPoint, i}
+                {@const isBaseline = i === baselineIndex}
+                {@const isLatest = i === currentData.length - 1}
                 <circle
                     cx={xScale(i, currentData.length)}
                     cy={yScale(dataPoint.test_value as number)}
-                    r={hoveredIndex === i ? 6 : 4}
-                    fill={hoveredIndex === i ? "#2563eb" : "#3b82f6"}
+                    r={hoveredIndex === i || isBaseline || isLatest ? 6 : 4}
+                    fill={hoveredIndex === i
+                        ? "#2563eb"
+                        : isBaseline
+                          ? "#f59e0b"
+                          : isLatest
+                            ? "#10b981"
+                            : "#3b82f6"}
                     stroke="white"
                     stroke-width="2"
                     class="cursor-pointer transition-all duration-150"
