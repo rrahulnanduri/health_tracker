@@ -6,14 +6,13 @@
     import StringBiomarkers from "./StringBiomarkers.svelte";
     import CompactMetricRow from "./CompactMetricRow.svelte";
     import type { Metric } from "$lib/types";
-    import { X, BarChart3, Table } from "lucide-svelte";
+    import { X } from "lucide-svelte";
     import { isMetricAbnormal, groupMetricsByDate } from "$lib/utils";
     let { groupedMetrics }: { groupedMetrics: Record<string, Metric[]> } =
         $props();
 
     let categories = $derived(Object.keys(groupedMetrics));
     let selectedCategory: string | null = $state(null);
-    let viewMode: "graph" | "table" = $state("graph");
 
     let metricsByDate = $derived(
         selectedCategory
@@ -197,66 +196,18 @@
                         {groupedMetrics[selectedCategory].length} Tests
                     </p>
                 </div>
-                <div class="flex items-center gap-2">
-                    <!-- View Toggle -->
-                    <div class="flex bg-indigo-700/50 rounded-lg p-0.5">
-                        <button
-                            onclick={() => (viewMode = "graph")}
-                            class="px-2 py-1 rounded-md text-xs font-medium transition-all flex items-center gap-1"
-                            class:bg-white={viewMode === "graph"}
-                            class:text-indigo-600={viewMode === "graph"}
-                            class:text-indigo-100={viewMode !== "graph"}
-                        >
-                            <BarChart3 class="w-3.5 h-3.5" />
-                            Graph
-                        </button>
-                        <button
-                            onclick={() => (viewMode = "table")}
-                            class="px-2 py-1 rounded-md text-xs font-medium transition-all flex items-center gap-1"
-                            class:bg-white={viewMode === "table"}
-                            class:text-indigo-600={viewMode === "table"}
-                            class:text-indigo-100={viewMode !== "table"}
-                        >
-                            <Table class="w-3.5 h-3.5" />
-                            Table
-                        </button>
-                    </div>
-                    <button
-                        onclick={close}
-                        class="p-1 hover:bg-white/20 rounded-full transition-colors"
-                    >
-                        <X class="w-5 h-5" />
-                    </button>
-                </div>
+                <button
+                    onclick={close}
+                    class="p-1 hover:bg-white/20 rounded-full transition-colors"
+                >
+                    <X class="w-5 h-5" />
+                </button>
             </div>
 
             <!-- Content -->
             <div class="flex-1 overflow-y-auto p-4 bg-slate-50">
-                {#if viewMode === "graph"}
-                    <TrendChart allMetrics={groupedMetrics[selectedCategory]} />
-                    <StringBiomarkers
-                        metrics={groupedMetrics[selectedCategory]}
-                    />
-                {:else}
-                    <div class="space-y-8 pb-8">
-                        {#each sortedDateKeys as date}
-                            <div>
-                                <h4
-                                    class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2 sticky top-0 z-10 py-1"
-                                >
-                                    {date}
-                                </h4>
-                                <div
-                                    class="bg-white rounded-md shadow-sm border border-slate-100 divide-y divide-slate-100"
-                                >
-                                    {#each metricsByDate[date] as metric (metric.id)}
-                                        <CompactMetricRow {metric} />
-                                    {/each}
-                                </div>
-                            </div>
-                        {/each}
-                    </div>
-                {/if}
+                <TrendChart allMetrics={groupedMetrics[selectedCategory]} />
+                <StringBiomarkers metrics={groupedMetrics[selectedCategory]} />
             </div>
         </div>
     {/if}
