@@ -35,14 +35,22 @@
         });
     }
 
+    // Normalize reference range format: ensure "X - Y" spacing
+    function normalizeRefRange(range: string): string {
+        if (!range || range === "-") return range;
+        // Replace various dash formats with consistent " - " spacing
+        // Handles: "3.5-5", "3.5 -5", "3.5- 5", "3.5  -  5" → "3.5 - 5"
+        return range.replace(/\s*[-–—]\s*/g, " - ").trim();
+    }
+
     // Get reference range, falling back to database lookup if metric has none
     function getRefRange(metric: Metric | undefined, testName: string): string {
         if (metric?.ref_range) {
-            return metric.ref_range;
+            return normalizeRefRange(metric.ref_range);
         }
         // Fallback to reference range database
         const dbRange = getReferenceRangeWithUnit(testName);
-        return dbRange || "-";
+        return dbRange ? normalizeRefRange(dbRange) : "-";
     }
 
     // Build pivot structure: category -> testName -> { date: metric }
