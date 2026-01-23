@@ -31,7 +31,7 @@ interface RangeValues {
 // Type assertion for the imported JSON
 const tests = referenceData.tests as ReferenceRange[];
 
-// Build a lookup map for fast access
+// Build a lookup map for fast access (all keys are UPPERCASE)
 const nameToRangeMap = new Map<string, ReferenceRange>();
 const aliasToRangeMap = new Map<string, ReferenceRange>();
 
@@ -46,31 +46,56 @@ for (const test of tests) {
 }
 
 /**
+ * Clean a test name by removing parenthetical abbreviations like (MCV), (MCH), etc.
+ */
+function cleanTestName(name: string): string {
+    // Remove parenthetical content like (MCV), (MCH), etc.
+    return name
+        .replace(/\s*\([^)]*\)\s*/g, ' ')
+        .replace(/\s+/g, ' ')
+        .trim();
+}
+
+/**
  * Find a reference range for a given test name.
- * Matches by exact name first, then by alias.
+ * Matches by exact name first, then by alias, then by fuzzy matching.
  */
 export function findReferenceRange(testName: string): ReferenceRange | null {
     const normalized = testName.toUpperCase().trim();
+    const cleaned = cleanTestName(normalized);
 
     // Try exact name match first
     if (nameToRangeMap.has(normalized)) {
         return nameToRangeMap.get(normalized)!;
     }
 
-    // Try alias match
+    // Try cleaned name
+    if (nameToRangeMap.has(cleaned)) {
+        return nameToRangeMap.get(cleaned)!;
+    }
+
+    // Try alias match (exact)
     if (aliasToRangeMap.has(normalized)) {
         return aliasToRangeMap.get(normalized)!;
     }
 
-    // Try partial matching (for cases like "Glucose Fasting" vs "Fasting Glucose")
+    // Try cleaned alias match
+    if (aliasToRangeMap.has(cleaned)) {
+        return aliasToRangeMap.get(cleaned)!;
+    }
+
+    // Try partial matching on names (for cases like "GLUCOSE FASTING" vs "FASTING GLUCOSE")
     for (const [key, range] of nameToRangeMap) {
-        if (normalized.includes(key) || key.includes(normalized)) {
+        if (normalized.includes(key) || key.includes(normalized) ||
+            cleaned.includes(key) || key.includes(cleaned)) {
             return range;
         }
     }
 
+    // Try partial matching on aliases
     for (const [key, range] of aliasToRangeMap) {
-        if (normalized.includes(key) || key.includes(normalized)) {
+        if (normalized.includes(key) || key.includes(normalized) ||
+            cleaned.includes(key) || key.includes(cleaned)) {
             return range;
         }
     }

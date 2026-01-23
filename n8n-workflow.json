@@ -26,14 +26,14 @@
             "type": "n8n-nodes-base.googleDriveTrigger",
             "typeVersion": 1,
             "position": [
-                -176,
-                0
+                576,
+                160
             ],
-            "id": "24008b36-8ad0-42a3-89df-ad9ace100b6a",
+            "id": "1f65c531-55e2-4b00-a608-776cdedd39a4",
             "name": "Google Drive Trigger",
             "credentials": {
                 "googleDriveOAuth2Api": {
-                    "id": "m2HhRwQ3oVLNOTx4",
+                    "id": "OshKZioGU0eClFog",
                     "name": "Google Drive account"
                 }
             }
@@ -53,14 +53,14 @@
             "type": "n8n-nodes-base.googleDrive",
             "typeVersion": 3,
             "position": [
-                240,
-                0
+                992,
+                160
             ],
-            "id": "4f972f8b-583b-4149-ada7-670e2e655a5c",
+            "id": "0b2e3962-d53c-4a7b-a0ae-569779788b84",
             "name": "Download file",
             "credentials": {
                 "googleDriveOAuth2Api": {
-                    "id": "m2HhRwQ3oVLNOTx4",
+                    "id": "OshKZioGU0eClFog",
                     "name": "Google Drive account"
                 }
             }
@@ -84,13 +84,13 @@
                     "timeout": 300000
                 }
             },
-            "id": "761317f5-ea94-4d46-8efd-37c66ad943e7",
+            "id": "f6cde71e-3bd6-4118-a73e-27995f4d14be",
             "name": "MarkItDown Parser (via Mac)",
             "type": "n8n-nodes-base.httpRequest",
             "typeVersion": 4.1,
             "position": [
-                -176,
-                288
+                576,
+                448
             ]
         },
         {
@@ -101,11 +101,11 @@
             },
             "type": "n8n-nodes-base.stickyNote",
             "position": [
-                -560,
-                -64
+                192,
+                96
             ],
             "typeVersion": 1,
-            "id": "bca9fc3e-4c18-4134-aa78-1ecefb9d235a",
+            "id": "108fd8f9-85fc-4411-bed9-60b404046531",
             "name": "Sticky Note"
         },
         {
@@ -113,16 +113,16 @@
                 "promptType": "define",
                 "text": "=Extract the data from this report: {{ $json.data }}",
                 "options": {
-                    "systemMessage": "You are a medical data extraction API. Extract patient information and test results from Markdown text with high precision.\nEXTRACTION RULES:\n1. Patient Name: Return in Title Case as 'Firstname Lastname'. Ignore middle names. Remove extra spaces.\n   Example: \"RAHUL KUMAR NANDURI\" → \"Rahul Nanduri\"\n2. Date: Extract the Test Date, Collection Date, or Report Date. Return in YYYY-MM-DD format.\n   Example: \"27th December 2025\" → \"2025-12-27\"\n3. Categories: Group biomarkers by their logical medical category based on what they measure. Use Title Case for category names. Be consistent - if two reports contain the same biomarker, assign it to the same category.\n   Examples of category groupings (use your medical knowledge to categorize appropriately):\n   - Blood cell counts, hemoglobin → grouped together\n   - Cholesterol, triglycerides, lipoproteins → grouped together\n   - Kidney markers like creatinine, urea → grouped together\n   - Urine test properties → grouped together\n4. Test Names: Use Title Case. Preserve standard medical abbreviations in uppercase.\n   Examples: \"haemoglobin\" → \"Haemoglobin\", \"hdl cholesterol\" → \"HDL Cholesterol\", \"rbc count\" → \"RBC Count\"\n5. Values: Remove leading/trailing spaces. For qualitative results, use Title Case.\n   Examples: \" 13.7 \" → \"13.7\", \"NEGATIVE\" → \"Negative\"\n6. Units: Use lowercase with standard formatting.\n   Examples: \"G/DL\" → \"g/dL\", \"MG/DL\" → \"mg/dL\"\nHANDLING COMPLEX TESTS:\nIf a test has multiple properties (e.g., urine color and pH), each property is a separate entry sharing the same category and test_date.\nOUTPUT FORMAT:\nReturn ONLY a raw JSON object. No markdown, no code blocks, no explanatory text.\n{\n  \"user\": {\n    \"name\": \"Firstname Lastname\",\n    \"age\": 22,\n    \"gender\": \"Male\"\n  },\n  \"metrics\": [\n    {\n      \"category\": \"Category Name\",\n      \"test_date\": \"YYYY-MM-DD\",\n      \"test_name\": \"Test Name\",\n      \"value\": \"13.7\",\n      \"unit\": \"g/dL\",\n      \"reference_range\": \"13.0 - 17.0\"\n    }\n  ]\n}"
+                    "systemMessage": "You are a medical data extraction API. Your goal is to extract patient information and test results from Markdown text with **high precision and consistency**.\n## 1. Extraction Rules\n### Patient Information\n- **Name**: Always return 'FIRSTNAME LASTNAME' in UPPERCASE (e.g., 'RAHUL NANDURI'). Ignore middle names.\n- **Age**: Extract as integer.\n- **Gender**: Extract as UPPERCASE ('MALE' or 'FEMALE').\n### Date Extraction\n- Identify the 'Test Date', 'Collection Date', or 'Report Date' from the document header.\n- Return in **YYYY-MM-DD** format (e.g., 2025-12-27).\n### Categorization\nGroup biomarkers by their logical category using these **exact category names**:\n- BIOCHEMISTRY\n- HEMATOLOGY\n- LIPID PROFILE\n- THYROID FUNCTION TEST\n- RENAL FUNCTION TEST\n- LIVER FUNCTION TEST\n- URINE ANALYSIS\n- VITAMINS\n- CLINICAL PATHOLOGY\n**CRITICAL**: Each test should appear in only ONE category. Use the most specific category. For example:\n- Cholesterol tests → LIPID PROFILE (not BIOCHEMISTRY)\n- Vitamin D, B12 → VITAMINS (not BIOCHEMISTRY)\n- Creatinine, Urea, BUN → RENAL FUNCTION TEST\n- TSH, T3, T4 → THYROID FUNCTION TEST\n## 2. Test Name Standardization (CRITICAL)\nAlways use these **exact standardized names** in UPPERCASE:\n| Common Variations | Standardized Name |\n|-------------------|-------------------|\n| Vitamin D, 25 Hydroxy Vitamin D, Vitamin D (25 Hydroxy), 25-OH Vitamin D | VITAMIN D 25 HYDROXY |\n| Vit B12, B12, Vitamin B-12, Cyanocobalamin | VITAMIN B12 CYANOCOBALAMIN |\n| TSH, Thyroid Stimulating Hormone, Thyrotropin | TSH THYROID STIMULATING HORMONE |\n| HDL, HDL Cholesterol, Cholesterol HDL, HDL-C | CHOLESTEROL HDL DIRECT |\n| LDL, LDL Cholesterol, LDL-C | LDL CHOLESTEROL |\n| Total Cholesterol, Cholesterol Total | CHOLESTEROL TOTAL |\n| Triglycerides, TG, Triacylglycerol | TRIGLYCERIDES |\n| Hemoglobin, Hb, Hgb | HEMOGLOBIN |\n| HbA1c, Glycated Hemoglobin, A1C | HEMOGLOBIN A1C |\n| Creatinine, Serum Creatinine, S. Creatinine | CREATININE SERUM |\n| Urea, Blood Urea, Serum Urea | UREA SERUM |\n| BUN, Blood Urea Nitrogen | BLOOD UREA NITROGEN |\n| SGPT, ALT, Alanine Aminotransferase | SGPT ALT |\n| SGOT, AST, Aspartate Aminotransferase | SGOT AST |\n| GGT, Gamma GT, Gamma Glutamyl Transferase | GGT GAMMA GT |\n| Bilirubin Total, T. Bilirubin | BILIRUBIN TOTAL |\n| Bilirubin Direct, D. Bilirubin | BILIRUBIN DIRECT |\n| Uric Acid, Serum Uric Acid | URIC ACID |\n| Calcium, Serum Calcium | CALCIUM SERUM |\n| Phosphorus, Phosphate | PHOSPHORUS SERUM |\n| Sodium, Na, Serum Sodium | SODIUM SERUM |\n| Potassium, K, Serum Potassium | POTASSIUM SERUM |\n**ALL test_name values MUST be UPPERCASE.**\n## 3. Handling Complex Tests\nIf a test has multiple properties (e.g., Urine Color, Urine pH), each property must be its own entry in the 'metrics' array, sharing the same 'category' and 'test_date'.\n## 4. Reference Range Handling\n- Extract the **exact reference range text** from the report.\n- If a range shows \"< 10\", preserve as \"< 10\".\n- If a range shows \"10 - 20\", preserve as \"10 - 20\".\n- Do not modify or interpret the reference range.\n## 5. Output Format\nReturn ONLY a raw JSON object. Do not include markdown code blocks or the word 'json'.\n{\n  \"user\": {\n    \"name\": \"FIRSTNAME LASTNAME\",\n    \"age\": 22,\n    \"gender\": \"MALE\"\n  },\n  \"metrics\": [\n    {\n      \"category\": \"VITAMINS\",\n      \"test_date\": \"YYYY-MM-DD\",\n      \"test_name\": \"VITAMIN D 25 HYDROXY\",\n      \"value\": \"28.99\",\n      \"unit\": \"ng/mL\",\n      \"reference_range\": \"30 - 100\"\n    }\n  ]\n}"
                 }
             },
             "type": "@n8n/n8n-nodes-langchain.agent",
             "typeVersion": 3.1,
             "position": [
-                32,
-                288
+                784,
+                448
             ],
-            "id": "c49bbadc-359f-4305-838a-2b31c6b940df",
+            "id": "e414a662-a042-4b81-8829-abaf39b81755",
             "name": "AI Agent"
         },
         {
@@ -134,29 +134,29 @@
             "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
             "typeVersion": 1,
             "position": [
-                32,
-                464
+                784,
+                624
             ],
-            "id": "4c5f1a2a-cd5f-4818-a59c-eb9c38037786",
+            "id": "6b5d4f58-c5ab-42aa-b54d-1fb7363c8787",
             "name": "Google Gemini Chat Model",
             "credentials": {
                 "googlePalmApi": {
-                    "id": "9xxiQQl3I8DSef9B",
+                    "id": "lXwWdlqrNTVkjtv5",
                     "name": "Google Gemini(PaLM) Api account"
                 }
             }
         },
         {
             "parameters": {
-                "jsCode": "// Utility: Normalize test name - removes extra punctuation, standardizes spacing\nfunction normalizeTestName(str) {\n  if (!str) return '';\n  \n  // Common medical abbreviations to preserve in uppercase\n  const abbreviations = [\n    'HDL', 'LDL', 'VLDL', 'RBC', 'WBC', 'WBCS', 'RBCS', 'PLT', \n    'TSH', 'T3', 'T4', 'FT3', 'FT4', 'HBA1C', 'FBS', 'PPBS', \n    'BUN', 'GFR', 'EGFR', 'ALT', 'AST', 'ALP', 'GGT', 'ESR', \n    'CRP', 'BNP', 'CK', 'CKMB', 'LDH', 'B12', 'D3', 'FSH', 'LH', \n    'PSA', 'HIV', 'HCV', 'HBV', 'PT', 'INR', 'APTT', 'MCH', \n    'MCHC', 'MCV', 'RDW', 'MPV', 'PDW', 'PCV', 'PH'\n  ];\n  \n  // Step 1: Remove hyphens, extra spaces, dots\n  let normalized = str\n    .replace(/[-–—]/g, ' ')\n    .replace(/\\.\\s*/g, ' ')\n    .replace(/\\s+/g, ' ')\n    .trim();\n  \n  // Step 2: Convert to Title Case\n  normalized = normalized\n    .toLowerCase()\n    .replace(/\\b\\w/g, c => c.toUpperCase());\n  \n  // Step 3: Restore abbreviations to uppercase\n  abbreviations.forEach(abbr => {\n    const titleCase = abbr.charAt(0).toUpperCase() + abbr.slice(1).toLowerCase();\n    const regex = new RegExp('\\\\b' + titleCase + '\\\\b', 'gi');\n    normalized = normalized.replace(regex, abbr);\n  });\n  \n  return normalized;\n}\n// Utility: Normalize user name to consistent format\nfunction normalizeName(name) {\n  if (!name) return 'Unknown';\n  return name\n    .replace(/\\s+/g, ' ')\n    .trim()\n    .split(' ')\n    .filter(word => word.length > 0)\n    .slice(0, 2)\n    .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())\n    .join(' ');\n}\n// Utility: Normalize category to standard names\nfunction normalizeCategory(category) {\n  if (!category) return 'General';\n  \n  const cat = category.toLowerCase().trim().replace(/\\s+/g, ' ');\n  \n  const categoryMap = {\n    'hematology': 'Hematology',\n    'haematology': 'Hematology',\n    'blood cell counts': 'Hematology',\n    'cbc': 'Hematology',\n    'complete blood count': 'Hematology',\n    'lipid profile': 'Lipid Profile',\n    'lipid panel': 'Lipid Profile',\n    'lipids': 'Lipid Profile',\n    'renal function test': 'Renal Function',\n    'renal function': 'Renal Function',\n    'kidney function': 'Renal Function',\n    'liver function test': 'Liver Function',\n    'liver function': 'Liver Function',\n    'thyroid profile': 'Thyroid',\n    'thyroid function': 'Thyroid',\n    'thyroid hormones': 'Thyroid',\n    'urine analysis': 'Urinalysis',\n    'urinalysis': 'Urinalysis',\n    'biochemistry': 'Biochemistry',\n    'chemistry': 'Biochemistry',\n    'blood glucose': 'Biochemistry',\n    'vitamins': 'Vitamins'\n  };\n  \n  return categoryMap[cat] || category\n    .toLowerCase()\n    .replace(/\\b\\w/g, c => c.toUpperCase());\n}\n// Parse the AI response\nconst response = JSON.parse(\n  $json.output\n    .replace(/```json/g, '')\n    .replace(/```/g, '')\n    .trim()\n);\nconst user = response.user;\nconst metrics = response.metrics;\nconst normalizedUserName = normalizeName(user.name);\nreturn metrics.map(m => ({\n  json: {\n    user_name: normalizedUserName,\n    user_age: user.age || null,\n    user_gender: (user.gender || '').charAt(0).toUpperCase() + (user.gender || '').slice(1).toLowerCase(),\n    category: normalizeCategory(m.category),\n    test_date: m.test_date,\n    test_name: normalizeTestName(m.test_name),\n    test_value: String(m.value || '').trim(),\n    test_unit: (m.unit || '').toLowerCase().trim(),\n    test_range: m.reference_range || ''\n  }\n}));"
+                "jsCode": "// Test name normalization mapping\nconst TEST_NAME_MAP = {\n  // Vitamin D variations\n  'VITAMIN D': 'VITAMIN D 25 HYDROXY',\n  '25 HYDROXY VITAMIN D': 'VITAMIN D 25 HYDROXY',\n  'VITAMIN D (25 HYDROXY)': 'VITAMIN D 25 HYDROXY',\n  '25-OH VITAMIN D': 'VITAMIN D 25 HYDROXY',\n  '25 OH VITAMIN D': 'VITAMIN D 25 HYDROXY',\n  \n  // B12 variations\n  'VIT B12': 'VITAMIN B12 CYANOCOBALAMIN',\n  'B12': 'VITAMIN B12 CYANOCOBALAMIN',\n  'VITAMIN B-12': 'VITAMIN B12 CYANOCOBALAMIN',\n  'VITAMIN B 12': 'VITAMIN B12 CYANOCOBALAMIN',\n  'CYANOCOBALAMIN': 'VITAMIN B12 CYANOCOBALAMIN',\n  \n  // TSH variations\n  'TSH': 'TSH THYROID STIMULATING HORMONE',\n  'THYROID STIMULATING HORMONE': 'TSH THYROID STIMULATING HORMONE',\n  'THYROTROPIN': 'TSH THYROID STIMULATING HORMONE',\n  \n  // Cholesterol variations\n  'HDL': 'CHOLESTEROL HDL DIRECT',\n  'HDL CHOLESTEROL': 'CHOLESTEROL HDL DIRECT',\n  'HDL-C': 'CHOLESTEROL HDL DIRECT',\n  'LDL': 'LDL CHOLESTEROL',\n  'LDL-C': 'LDL CHOLESTEROL',\n  'TOTAL CHOLESTEROL': 'CHOLESTEROL TOTAL',\n  \n  // Hemoglobin variations\n  'HB': 'HEMOGLOBIN',\n  'HGB': 'HEMOGLOBIN',\n  'HBA1C': 'HEMOGLOBIN A1C',\n  'GLYCATED HEMOGLOBIN': 'HEMOGLOBIN A1C',\n  'A1C': 'HEMOGLOBIN A1C',\n  \n  // Liver function variations\n  'SGPT': 'SGPT ALT',\n  'ALT': 'SGPT ALT',\n  'ALANINE AMINOTRANSFERASE': 'SGPT ALT',\n  'SGOT': 'SGOT AST',\n  'AST': 'SGOT AST',\n  'ASPARTATE AMINOTRANSFERASE': 'SGOT AST',\n  'GGT': 'GGT GAMMA GT',\n  'GAMMA GT': 'GGT GAMMA GT',\n  \n  // Kidney function variations\n  'CREATININE': 'CREATININE SERUM',\n  'SERUM CREATININE': 'CREATININE SERUM',\n  'S CREATININE': 'CREATININE SERUM',\n  'UREA': 'UREA SERUM',\n  'BLOOD UREA': 'UREA SERUM',\n  'BUN': 'BLOOD UREA NITROGEN',\n  \n  // Electrolyte variations\n  'NA': 'SODIUM SERUM',\n  'SODIUM': 'SODIUM SERUM',\n  'K': 'POTASSIUM SERUM',\n  'POTASSIUM': 'POTASSIUM SERUM',\n  'CA': 'CALCIUM SERUM',\n  'CALCIUM': 'CALCIUM SERUM',\n};\n// Category normalization\nconst CATEGORY_MAP = {\n  'BIOCHEMISTRY': 'BIOCHEMISTRY',\n  'BIO CHEMISTRY': 'BIOCHEMISTRY',\n  'HEMATOLOGY': 'HEMATOLOGY',\n  'HAEMATOLOGY': 'HEMATOLOGY',\n  'LIPID PROFILE': 'LIPID PROFILE',\n  'LIPIDS': 'LIPID PROFILE',\n  'THYROID': 'THYROID FUNCTION TEST',\n  'THYROID FUNCTION': 'THYROID FUNCTION TEST',\n  'THYROID FUNCTION TEST': 'THYROID FUNCTION TEST',\n  'RENAL': 'RENAL FUNCTION TEST',\n  'RENAL FUNCTION': 'RENAL FUNCTION TEST',\n  'RENAL FUNCTION TEST': 'RENAL FUNCTION TEST',\n  'KIDNEY FUNCTION': 'RENAL FUNCTION TEST',\n  'LIVER': 'LIVER FUNCTION TEST',\n  'LIVER FUNCTION': 'LIVER FUNCTION TEST',\n  'LIVER FUNCTION TEST': 'LIVER FUNCTION TEST',\n  'URINE': 'URINE ANALYSIS',\n  'URINE ANALYSIS': 'URINE ANALYSIS',\n  'URINALYSIS': 'URINE ANALYSIS',\n  'VITAMINS': 'VITAMINS',\n  'VITAMIN': 'VITAMINS',\n};\nfunction normalizeTestName(name) {\n  const upper = name.toUpperCase().trim();\n  // Check for exact match first\n  if (TEST_NAME_MAP[upper]) {\n    return TEST_NAME_MAP[upper];\n  }\n  // Check for partial matches\n  for (const [key, value] of Object.entries(TEST_NAME_MAP)) {\n    if (upper.includes(key) || key.includes(upper)) {\n      return value;\n    }\n  }\n  // Return uppercase version if no mapping found\n  return upper;\n}\nfunction normalizeCategory(category) {\n  const upper = category.toUpperCase().trim();\n  return CATEGORY_MAP[upper] || upper;\n}\n// Main processing\nconst response = JSON.parse(\n  $json.output.replace(/```json/g, \"\").replace(/```/g, \"\").trim()\n);\nconst user = response.user;\nconst metrics = response.metrics;\nreturn metrics.map(m => ({\n  json: {\n    user_name: user.name.toUpperCase().trim(),\n    user_age: user.age,\n    user_gender: user.gender.toUpperCase().trim(),\n    category: normalizeCategory(m.category || \"General\"),\n    test_date: m.test_date,\n    test_name: normalizeTestName(m.test_name),\n    test_value: String(m.value).trim(),\n    test_unit: m.unit,\n    test_range: m.reference_range\n  }\n}));"
             },
             "type": "n8n-nodes-base.code",
             "typeVersion": 2,
             "position": [
-                368,
-                288
+                1120,
+                448
             ],
-            "id": "a880b45f-cfbd-4793-a7dd-d8c4c27a86b6",
+            "id": "06896eb8-98c7-49d3-9946-c946f5a901df",
             "name": "Code in JavaScript"
         },
         {
@@ -167,11 +167,11 @@
             },
             "type": "n8n-nodes-base.stickyNote",
             "position": [
-                -560,
-                224
+                192,
+                384
             ],
             "typeVersion": 1,
-            "id": "a3e485b8-e24b-47a7-9607-c1ba6e05c76f",
+            "id": "5ede4304-c2bd-4bc5-b449-778ed0d0e820",
             "name": "Sticky Note1"
         },
         {
@@ -212,7 +212,7 @@
                         {
                             "id": "name",
                             "displayName": "name",
-                            "required": false,
+                            "required": true,
                             "defaultMatch": false,
                             "display": true,
                             "type": "string",
@@ -236,6 +236,16 @@
                             "display": true,
                             "type": "string",
                             "canBeUsedToMatch": false
+                        },
+                        {
+                            "id": "created_at",
+                            "displayName": "created_at",
+                            "required": false,
+                            "defaultMatch": false,
+                            "display": true,
+                            "type": "dateTime",
+                            "canBeUsedToMatch": false,
+                            "removed": false
                         }
                     ],
                     "attemptToConvertTypes": false,
@@ -250,14 +260,14 @@
             "type": "n8n-nodes-base.postgres",
             "typeVersion": 2.6,
             "position": [
-                -176,
-                736
+                576,
+                896
             ],
-            "id": "f5e8caff-3a68-4950-a174-8d984ea02fa4",
+            "id": "8562076e-d176-4982-847d-c7429e83508d",
             "name": "Insert or update rows in a table",
             "credentials": {
                 "postgres": {
-                    "id": "hWVYuPItLZaz2vEv",
+                    "id": "EDZFb6n5fwpDXEwi",
                     "name": "Postgres account"
                 }
             }
@@ -270,11 +280,11 @@
             },
             "type": "n8n-nodes-base.stickyNote",
             "position": [
-                -560,
-                640
+                192,
+                800
             ],
             "typeVersion": 1,
-            "id": "164d6a91-f5b3-4279-bf20-36c98d6474d4",
+            "id": "548bcc8e-2f9c-4134-8639-400b29724f19",
             "name": "Sticky Note2"
         },
         {
@@ -298,8 +308,6 @@
                         "category": "={{ $('Code in JavaScript').item.json.category }}",
                         "test_value": "={{ $('Code in JavaScript').item.json.test_value }}",
                         "test_name": "={{ $('Code in JavaScript').item.json.test_name }}",
-                        "unit": "={{ $('Code in JavaScript').item.json.test_unit }}",
-                        "ref_range": "={{ $('Code in JavaScript').item.json.test_range }}",
                         "user_id": "={{ $json.id }}"
                     },
                     "matchingColumns": [
@@ -329,6 +337,26 @@
                             "removed": false
                         },
                         {
+                            "id": "category",
+                            "displayName": "category",
+                            "required": false,
+                            "defaultMatch": false,
+                            "display": true,
+                            "type": "string",
+                            "canBeUsedToMatch": false,
+                            "removed": false
+                        },
+                        {
+                            "id": "test_date",
+                            "displayName": "test_date",
+                            "required": false,
+                            "defaultMatch": false,
+                            "display": true,
+                            "type": "dateTime",
+                            "canBeUsedToMatch": true,
+                            "removed": false
+                        },
+                        {
                             "id": "test_name",
                             "displayName": "test_name",
                             "required": false,
@@ -345,55 +373,37 @@
                             "defaultMatch": false,
                             "display": true,
                             "type": "string",
-                            "canBeUsedToMatch": true,
+                            "canBeUsedToMatch": false,
                             "removed": false
                         },
                         {
-                            "id": "unit",
-                            "displayName": "unit",
+                            "id": "test_unit",
+                            "displayName": "test_unit",
                             "required": false,
                             "defaultMatch": false,
                             "display": true,
                             "type": "string",
-                            "canBeUsedToMatch": false
+                            "canBeUsedToMatch": false,
+                            "removed": false
                         },
                         {
-                            "id": "ref_range",
-                            "displayName": "ref_range",
+                            "id": "test_range",
+                            "displayName": "test_range",
                             "required": false,
                             "defaultMatch": false,
                             "display": true,
                             "type": "string",
-                            "canBeUsedToMatch": false
+                            "canBeUsedToMatch": false,
+                            "removed": false
                         },
                         {
-                            "id": "recorded_at",
-                            "displayName": "recorded_at",
+                            "id": "created_at",
+                            "displayName": "created_at",
                             "required": false,
                             "defaultMatch": false,
                             "display": true,
                             "type": "dateTime",
                             "canBeUsedToMatch": false,
-                            "removed": true
-                        },
-                        {
-                            "id": "category",
-                            "displayName": "category",
-                            "required": false,
-                            "defaultMatch": false,
-                            "display": true,
-                            "type": "string",
-                            "canBeUsedToMatch": true,
-                            "removed": false
-                        },
-                        {
-                            "id": "test_date",
-                            "displayName": "test_date",
-                            "required": false,
-                            "defaultMatch": false,
-                            "display": true,
-                            "type": "dateTime",
-                            "canBeUsedToMatch": true,
                             "removed": false
                         }
                     ],
@@ -405,14 +415,14 @@
             "type": "n8n-nodes-base.postgres",
             "typeVersion": 2.6,
             "position": [
-                48,
-                736
+                800,
+                896
             ],
-            "id": "4ef553ac-d99a-4931-addb-c1d28846e61f",
+            "id": "61e203ef-452a-4ef3-9fc3-45c24a6f5b7d",
             "name": "Insert or update rows in a table1",
             "credentials": {
                 "postgres": {
-                    "id": "hWVYuPItLZaz2vEv",
+                    "id": "EDZFb6n5fwpDXEwi",
                     "name": "Postgres account"
                 }
             }
@@ -424,10 +434,10 @@
             "type": "n8n-nodes-base.splitInBatches",
             "typeVersion": 3,
             "position": [
-                32,
-                0
+                784,
+                160
             ],
-            "id": "a978beb5-10ca-4646-8183-24a60015bd00",
+            "id": "48a49975-43a9-44fe-ab2e-9b13ed7d3ff8",
             "name": "Loop Over Items"
         }
     ],
@@ -536,6 +546,6 @@
     "pinData": {},
     "meta": {
         "templateCredsSetupCompleted": true,
-        "instanceId": "3b6b3113353c3283722b186abe73262670f430076f39c8bdeb698fa5cd84d087"
+        "instanceId": "6e7f21370284e3484e68e4fd2694c76aff61023b8410adfd0644932c2f14549a"
     }
 }
