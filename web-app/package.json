@@ -11,9 +11,10 @@
   },
   "dependencies": {
     "@tailwindcss/postcss": "^4.1.18",
-    "clerk-sveltekit": "latest",
+    "autoprefixer": "^10.4.24",
+    "clerk-sveltekit": "^0.4.3",
     "lucide-svelte": "^0.563.0",
-    "postgres": "latest",
+    "postgres": "^3.4.8",
     "sveltekit-rate-limiter": "^0.7.0",
     "svix": "^1.84.1",
     "tailwindcss": "^4.1.18",
