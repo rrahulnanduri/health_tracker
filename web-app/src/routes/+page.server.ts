@@ -130,11 +130,11 @@ export const load: PageServerLoad = async ({ locals }) => {
             metrics: parsedMetrics,
             isSuperuser
         };
-    } catch (e) {
+    } catch (e: any) {
         console.error('Database connection error:', e);
         return {
             metrics: [],
-            error: 'Unable to connect to database'
+            error: `Unable to connect: ${e.message || e}`
         };
     }
 };
