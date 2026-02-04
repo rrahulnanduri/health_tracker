@@ -1,12 +1,7 @@
 import postgres from 'postgres';
-import { DB_HOST, DB_PORT, DB_NAME, DB_USER, DB_PASSWORD } from '$env/static/private';
+import { DATABASE_URL } from '$env/static/private';
 
-const sql = postgres({
-    host: DB_HOST,
-    port: Number(DB_PORT),
-    database: DB_NAME,
-    username: DB_USER,
-    password: DB_PASSWORD
-});
+// Neon requires SSL in production, so we force it here
+const sql = postgres(DATABASE_URL, { ssl: 'require' });
 
 export default sql;
