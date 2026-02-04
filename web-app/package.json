@@ -10,11 +10,13 @@
     "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json"
   },
   "dependencies": {
+    "@tailwindcss/postcss": "^4.1.18",
     "clerk-sveltekit": "latest",
     "lucide-svelte": "^0.563.0",
     "postgres": "latest",
     "sveltekit-rate-limiter": "^0.7.0",
     "svix": "^1.84.1",
+    "tailwindcss": "^4.1.18",
     "vite": "latest"
   },
   "devDependencies": {
