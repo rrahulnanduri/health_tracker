@@ -54,7 +54,14 @@
         }
     });
 
-    // Calculate percentage change
+    // Helper: Calculate distance from optimal range (0 if inside)
+    function getDistanceToRange(value: number, min: number, max: number) {
+        if (value < min) return min - value;
+        if (value > max) return value - max;
+        return 0; // Inside range
+    }
+
+    // Calculate percentage change with quality assessment
     let percentageChange = $derived.by(() => {
         if (currentData.length < 2 || baselineIndex >= currentData.length - 1) {
             return null;
@@ -66,12 +73,43 @@
         if (baselineValue === 0) return null;
 
         const change = ((latestValue - baselineValue) / baselineValue) * 100;
+
+        // Determine quality (Good vs Bad) based on reference range
+        let quality: "good" | "bad" | "neutral" = "neutral";
+
+        if (refRange) {
+            const distBaseline = getDistanceToRange(
+                baselineValue,
+                refRange.min,
+                refRange.max,
+            );
+            const distLatest = getDistanceToRange(
+                latestValue,
+                refRange.min,
+                refRange.max,
+            );
+
+            // If we moved closer to the range (distance decreased), that's good!
+            // If we moved further away (distance increased), that's bad.
+            if (distLatest < distBaseline) {
+                quality = "good";
+            } else if (distLatest > distBaseline) {
+                quality = "bad";
+            } else {
+                // Distance didn't change (e.g. both inside range, or moved parallel to range?)
+                // If both are inside range (dist=0), it's generally neutral/good.
+                // Let's call it neutral unless we want to incentivize "optimal".
+                quality = "neutral";
+            }
+        }
+
         return {
             value: change,
             baselineDate: currentData[baselineIndex].test_date,
             latestDate: currentData[currentData.length - 1].test_date,
             baselineValue,
             latestValue,
+            quality,
         };
     });
 
@@ -196,14 +234,15 @@
         <div class="flex items-center gap-3">
             <!-- Percentage Change Indicator -->
             {#if percentageChange !== null}
+                {@const quality = percentageChange.quality}
                 <div
                     class="flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-medium"
-                    class:bg-green-50={percentageChange.value < 0}
-                    class:text-green-700={percentageChange.value < 0}
-                    class:bg-red-50={percentageChange.value > 0}
-                    class:text-red-700={percentageChange.value > 0}
-                    class:bg-slate-100={percentageChange.value === 0}
-                    class:text-slate-600={percentageChange.value === 0}
+                    class:bg-green-50={quality === "good"}
+                    class:text-green-700={quality === "good"}
+                    class:bg-red-50={quality === "bad"}
+                    class:text-red-700={quality === "bad"}
+                    class:bg-slate-100={quality === "neutral"}
+                    class:text-slate-600={quality === "neutral"}
                 >
                     {#if percentageChange.value > 0}
                         <TrendingUp class="w-4 h-4" />
