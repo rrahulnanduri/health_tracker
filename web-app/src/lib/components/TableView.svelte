@@ -1,10 +1,11 @@
 <script lang="ts">
     import { SvelteSet } from "svelte/reactivity";
-    import type { Metric } from "$lib/types";
+    import type { Metric, ReferenceRangeMap } from "$lib/types";
     import { isMetricAbnormal } from "$lib/utils";
 
     interface Props {
         groupedMetrics: Record<string, Metric[]>;
+        dbRanges?: ReferenceRangeMap;
         onTestClick?: (
             testName: string,
             category: string,
@@ -12,7 +13,7 @@
         ) => void;
     }
 
-    let { groupedMetrics, onTestClick }: Props = $props();
+    let { groupedMetrics, dbRanges, onTestClick }: Props = $props();
 
     // Fixed number of date columns to display
     const NUM_DATE_COLUMNS = 3;
@@ -134,8 +135,10 @@
                                 {#each allDates as date (date)}
                                     {@const metric = dateMetrics[date]}
                                     {#if metric}
-                                        {@const isAbnormal =
-                                            isMetricAbnormal(metric)}
+                                        {@const isAbnormal = isMetricAbnormal(
+                                            metric,
+                                            dbRanges,
+                                        )}
                                         <td
                                             class="col-value"
                                             class:cell-abnormal={isAbnormal}

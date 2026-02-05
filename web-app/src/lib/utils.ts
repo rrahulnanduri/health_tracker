@@ -113,156 +113,40 @@ export function groupMetricsByDate(metrics: Metric[]): Record<string, Metric[]> 
     return groups;
 }
 
-/**
- * Default reference ranges for common blood tests.
- * Used as fallback when lab reports don't provide range data.
- * Keys are normalized (UPPERCASE, trimmed).
- * Sources: Mayo Clinic, LabCorp, Quest Diagnostics, NCEP ATP III
- */
-const DEFAULT_REFERENCE_RANGES: Record<string, { min: number; max: number }> = {
-    // Complete Blood Count (CBC)
-    "HEMOGLOBIN": { min: 12.0, max: 17.5 },
-    "HAEMOGLOBIN": { min: 12.0, max: 17.5 },
-    "HB": { min: 12.0, max: 17.5 },
-    "HGB": { min: 12.0, max: 17.5 },
-    "HEMATOCRIT": { min: 35.5, max: 48.6 },
-    "HCT": { min: 35.5, max: 48.6 },
-    "PCV": { min: 35.5, max: 48.6 },
-    "RED BLOOD CELL COUNT": { min: 3.92, max: 5.65 },
-    "RBC": { min: 3.92, max: 5.65 },
-    "TOTAL RBC COUNT": { min: 3.92, max: 5.65 },
-    "RED BLOOD CELLS": { min: 3.92, max: 5.65 },
-    "WHITE BLOOD CELL COUNT": { min: 4500, max: 11000 },
-    "WBC": { min: 4500, max: 11000 },
-    "TOTAL WBC COUNT": { min: 4500, max: 11000 },
-    "LEUKOCYTES": { min: 4500, max: 11000 },
-    "PLATELET COUNT": { min: 150000, max: 400000 },
-    "PLATELETS": { min: 150000, max: 400000 },
-    "PLT": { min: 150000, max: 400000 },
-    "MEAN CELL VOLUME (MCV)": { min: 80, max: 100 },
-    "MCV": { min: 80, max: 100 },
-    "MEAN CELL HAEMOGLOBIN (MCH)": { min: 27, max: 33 },
-    "MCH": { min: 27, max: 33 },
-    "MEAN CORPUSCULAR HB CONCN (MCHC)": { min: 32, max: 36 },
-    "MCHC": { min: 32, max: 36 },
-    "RED CELL DISTRIBUTION WIDTH": { min: 11.0, max: 15.0 },
-    "RDW": { min: 11.0, max: 15.0 },
-    "NEUTROPHILS": { min: 40, max: 70 },
-    "ABSOLUTE NEUTROPHIL COUNT": { min: 1500, max: 8000 },
-    "LYMPHOCYTES": { min: 20, max: 40 },
-    "ABSOLUTE LYMPHOCYTE COUNT": { min: 1000, max: 4800 },
-    "MONOCYTES": { min: 2, max: 10 },
-    "ABSOLUTE MONOCYTE COUNT": { min: 100, max: 1000 },
-    "EOSINOPHILS": { min: 1, max: 6 },
-    "ABSOLUTE EOSINOPHIL COUNT": { min: 15, max: 500 },
-    "BASOPHILS": { min: 0, max: 2 },
-    "ABSOLUTE BASOPHILS COUNT": { min: 0, max: 200 },
-
-    // Lipid Panel
-    "CHOLESTEROL TOTAL": { min: 0, max: 200 },
-    "TOTAL CHOLESTEROL": { min: 0, max: 200 },
-    "CHOLESTEROL HDL DIRECT": { min: 40, max: 200 },
-    "HDL CHOLESTEROL": { min: 40, max: 200 },
-    "HDL-C": { min: 40, max: 200 },
-    "LDL CHOLESTEROL": { min: 0, max: 100 },
-    "LDL-C": { min: 0, max: 100 },
-    "VLDL CHOLESTEROL": { min: 5, max: 40 },
-    "TRIGLYCERIDES": { min: 0, max: 150 },
-    "NON HDL CHOLESTEROL": { min: 0, max: 130 },
-    "CHOL/HDL RATIO": { min: 0, max: 5.0 },
-    "LDL/HDL RATIO": { min: 0, max: 3.5 },
-    "HDL/LDL RATIO": { min: 0.3, max: 10 },
-
-    // Metabolic Panel
-    "GLUCOSE FASTING": { min: 70, max: 99 },
-    "FBS": { min: 70, max: 99 },
-    "FASTING BLOOD SUGAR": { min: 70, max: 99 },
-    "GLYCO HB (HBA1C)": { min: 0, max: 5.6 },
-    "HBA1C": { min: 0, max: 5.6 },
-    "ESTIMATED AVERAGE GLUCOSE": { min: 0, max: 117 },
-    "CALCIUM": { min: 8.6, max: 10.3 },
-    "SODIUM": { min: 136, max: 145 },
-    "POTASSIUM": { min: 3.5, max: 5.0 },
-    "CHLORIDE": { min: 98, max: 106 },
-
-    // Kidney Function
-    "CREATININE": { min: 0.5, max: 1.3 },
-    "CREATININE SERUM": { min: 0.5, max: 1.3 },
-    "BLOOD UREA NITROGEN": { min: 6, max: 20 },
-    "BLOOD UREA NITROGEN BUN": { min: 6, max: 20 },
-    "BUN": { min: 6, max: 20 },
-    "UREA": { min: 15, max: 45 },
-    "UREA SERUM": { min: 15, max: 45 },
-    "BUN / CREATININE RATIO": { min: 10, max: 20 },
-    "UREA CREATININE RATIO": { min: 10, max: 20 },
-    "URIC ACID": { min: 2.4, max: 7.0 },
-
-    // Liver Function
-    "ALANINE TRANSAMINASE (ALT/SGPT)": { min: 0, max: 41 },
-    "ALT": { min: 0, max: 41 },
-    "SGPT": { min: 0, max: 41 },
-    "ASPARTATE AMINOTRANSFERASE (AST/SGOT)": { min: 0, max: 40 },
-    "AST": { min: 0, max: 40 },
-    "SGOT": { min: 0, max: 40 },
-    "SGOT/SGPT": { min: 0.5, max: 1.3 },
-    "ALKALINE PHOSPHATASE ALPI": { min: 35, max: 147 },
-    "ALP": { min: 35, max: 147 },
-    "GGT GAMMA GLUTAMYL TRANSPEPTIDASE": { min: 0, max: 65 },
-    "GGT": { min: 0, max: 65 },
-    "BILIRUBIN TOTAL": { min: 0.1, max: 1.2 },
-    "BILIRUBIN": { min: 0.1, max: 1.2 },
-    "BILIRUBIN DIRECT": { min: 0.0, max: 0.3 },
-    "BILIRUBIN INDIRECT": { min: 0.1, max: 0.9 },
-    "ALBUMIN": { min: 3.5, max: 5.0 },
-    "SERUM ALBUMIN": { min: 3.5, max: 5.0 },
-    "GLOBULIN": { min: 2.0, max: 3.5 },
-    "TOTAL PROTEIN": { min: 6.0, max: 8.3 },
-    "A/G RATIO": { min: 1.1, max: 2.5 },
-
-    // Thyroid Panel
-    "TSH (THYROID STIMULATING HORMONE)": { min: 0.4, max: 4.0 },
-    "TSH": { min: 0.4, max: 4.0 },
-    "T3 (TRI IODOTHYRONINE)": { min: 80, max: 200 },
-    "T3": { min: 80, max: 200 },
-    "T4 (THYROXNE)": { min: 4.5, max: 12.5 },
-    "T4": { min: 4.5, max: 12.5 },
-
-    // Iron Studies
-    "IRON": { min: 37, max: 170 },
-    "TIBC": { min: 250, max: 400 },
-    "UIBC": { min: 100, max: 350 },
-    "TRANSFERRIN": { min: 200, max: 360 },
-    "TRANSFERRIN SATURATION": { min: 15, max: 50 },
-
-    // Vitamins
-    "VITAMIN D 25 HYDROXY": { min: 30, max: 100 },
-    "VITAMIN D": { min: 30, max: 100 },
-    "VITAMIN B12 CYANOCOBALAMIN": { min: 200, max: 1100 },
-    "VITAMIN B12": { min: 200, max: 1100 },
-
-    // Urinalysis (numeric)
-    "REACTION (PH)": { min: 4.5, max: 8.0 },
-    "SPECIFIC GRAVITY": { min: 1.005, max: 1.030 },
-};
+import type { ReferenceRangeMap } from './types';
 
 /**
  * Parse reference range string from lab report, with optional fallback lookup.
  * @param rangeStr - The reference range string from the lab report
  * @param testName - Optional test name for fallback lookup
+ * @param dbRanges - Optional map of DB reference ranges
  * @returns Parsed range or null
  */
-export function parseRange(rangeStr: string | null, testName?: string): { min: number; max: number } | null {
+export function parseRange(
+    rangeStr: string | null,
+    testName?: string,
+    dbRanges?: ReferenceRangeMap
+): { min: number; max: number } | null {
     // First, try to parse the provided range string
     if (rangeStr) {
         const parsed = parseRangeFromString(rangeStr);
         if (parsed) return parsed;
     }
 
-    // Fallback: lookup by test name
-    if (testName) {
+    // Fallback: lookup by test name in DB ranges
+    if (testName && dbRanges) {
         const normalized = testName.trim().toUpperCase();
-        const fallback = DEFAULT_REFERENCE_RANGES[normalized];
-        if (fallback) return fallback;
+        const fallback = dbRanges[normalized];
+        if (fallback) {
+            // Prefer generic optimal/normal ranges
+            // Future improvement: check patient gender if available to pick male/female specific
+            const min = fallback.optimal_min ?? fallback.normal_min ?? fallback.male_normal_min ?? fallback.female_normal_min;
+            const max = fallback.optimal_max ?? fallback.normal_max ?? fallback.male_normal_max ?? fallback.female_normal_max;
+
+            if (min !== undefined && max !== undefined && min !== null && max !== null) {
+                return { min: Number(min), max: Number(max) };
+            }
+        }
     }
 
     return null;
@@ -274,14 +158,7 @@ export function parseRange(rangeStr: string | null, testName?: string): { min: n
 function parseRangeFromString(rangeStr: string): { min: number; max: number } | null {
     const s = rangeStr.trim();
 
-    // Helper to parse numbers from a string segment
-    const getNums = (str: string) => {
-        const matches = str.match(/([0-9]+(\.[0-9]+)?)/g);
-        return matches ? matches.map(parseFloat) : [];
-    };
-
     // Strategy 1: Look for explicit "Optimal", "Normal", "Desirable" keywords
-    // We treat these as the "Safe Range"
     const keywords = ["OPTIMAL", "NORMAL", "DESIRABLE", "TARGET"];
     const upperStr = s.toUpperCase();
 
@@ -290,8 +167,6 @@ function parseRangeFromString(rangeStr: string): { min: number; max: number } | 
         if (idx !== -1) {
             const segment = s.slice(idx + kw.length);
 
-            // Check for inequalities first "./<100" or "<= 100"
-            // Support: <, <=, ≤
             const lessMatch = segment.match(/[:\s]*[<≤]=?\s*([0-9.]+)/);
             if (lessMatch) {
                 const val = parseFloat(lessMatch[1]);
@@ -337,9 +212,10 @@ function parseRangeFromString(rangeStr: string): { min: number; max: number } | 
     return null;
 }
 
-export function isMetricAbnormal(metric: Metric): boolean {
+export function isMetricAbnormal(metric: Metric, dbRanges?: ReferenceRangeMap): boolean {
     if (typeof metric.test_value === "number") {
-        const range = parseRange(metric.ref_range);
+        // Pass dbRanges to parseRange for fallback
+        const range = parseRange(metric.ref_range, metric.test_name, dbRanges);
         if (range) {
             return metric.test_value < range.min || metric.test_value > range.max;
         }

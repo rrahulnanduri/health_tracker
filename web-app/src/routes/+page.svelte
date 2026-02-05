@@ -125,9 +125,13 @@
 
 		<!-- Conditional view based on toggle -->
 		{#if viewMode === "circular"}
-			<CircularMenu {groupedMetrics} />
+			<CircularMenu {groupedMetrics} dbRanges={data.referenceRanges} />
 		{:else}
-			<TableView {groupedMetrics} onTestClick={handleTestClick} />
+			<TableView
+				{groupedMetrics}
+				dbRanges={data.referenceRanges}
+				onTestClick={handleTestClick}
+			/>
 		{/if}
 	{/if}
 </div>
@@ -169,7 +173,10 @@
 
 		<!-- Content: TrendChart -->
 		<div class="flex-1 overflow-y-auto p-4 bg-slate-50">
-			<TrendChart allMetrics={selectedTest.metrics} />
+			<TrendChart
+				allMetrics={selectedTest.metrics}
+				dbRanges={data.referenceRanges}
+			/>
 		</div>
 	</div>
 {/if}

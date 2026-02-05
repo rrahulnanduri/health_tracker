@@ -1,9 +1,13 @@
 <script lang="ts">
     import type { Metric } from "$lib/types";
     import { parseRange, groupMetricsByTestName } from "$lib/utils";
+    import type { ReferenceRangeMap } from "$lib/types";
     import { TrendingUp, TrendingDown, Minus } from "lucide-svelte";
 
-    let { allMetrics }: { allMetrics: Metric[] } = $props();
+    let {
+        allMetrics,
+        dbRanges,
+    }: { allMetrics: Metric[]; dbRanges?: ReferenceRangeMap } = $props();
 
     // Group metrics by test name
     let groupedByTest = $derived(groupMetricsByTestName(allMetrics));
@@ -117,7 +121,11 @@
     let refRange = $derived.by(() => {
         if (currentData.length > 0) {
             // Pass test name for fallback lookup if ref_range is empty
-            return parseRange(currentData[0].ref_range, selectedTestName);
+            return parseRange(
+                currentData[0].ref_range,
+                selectedTestName,
+                dbRanges,
+            );
         }
         return null;
     });

@@ -11,7 +11,8 @@
   },
   "dependencies": {
     "clerk-sveltekit": "latest",
-    "postgres": "latest",
+    "dotenv": "^17.2.3",
+    "postgres": "^3.4.8",
     "vite": "latest"
   },
   "devDependencies": {

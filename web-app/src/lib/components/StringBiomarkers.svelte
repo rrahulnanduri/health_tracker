@@ -1,8 +1,11 @@
 <script lang="ts">
-    import type { Metric } from "$lib/types";
+    import type { Metric, ReferenceRangeMap } from "$lib/types";
     import { isMetricAbnormal, normalizeMetricName } from "$lib/utils";
 
-    let { metrics }: { metrics: Metric[] } = $props();
+    let {
+        metrics,
+        dbRanges,
+    }: { metrics: Metric[]; dbRanges?: ReferenceRangeMap } = $props();
 
     // Filter to only string values
     let stringMetrics = $derived(
@@ -40,7 +43,7 @@
         </h3>
         <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
             {#each latestByName as metric}
-                {@const isAbnormal = isMetricAbnormal(metric)}
+                {@const isAbnormal = isMetricAbnormal(metric, dbRanges)}
                 <div
                     class="rounded-lg p-3 border transition-all duration-200 hover:shadow-md"
                     class:bg-emerald-50={!isAbnormal}

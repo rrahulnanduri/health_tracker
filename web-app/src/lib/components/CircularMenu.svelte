@@ -5,11 +5,17 @@
     import TrendChart from "./TrendChart.svelte";
     import StringBiomarkers from "./StringBiomarkers.svelte";
     import CompactMetricRow from "./CompactMetricRow.svelte";
-    import type { Metric } from "$lib/types";
     import { X } from "lucide-svelte";
     import { isMetricAbnormal, groupMetricsByDate } from "$lib/utils";
-    let { groupedMetrics }: { groupedMetrics: Record<string, Metric[]> } =
-        $props();
+    import { type Metric, type ReferenceRangeMap } from "$lib/types";
+
+    let {
+        groupedMetrics,
+        dbRanges,
+    }: {
+        groupedMetrics: Record<string, Metric[]>;
+        dbRanges?: ReferenceRangeMap;
+    } = $props();
 
     let categories = $derived(Object.keys(groupedMetrics));
     let selectedCategory: string | null = $state(null);
@@ -75,7 +81,7 @@
                 {@const pos = getPosition(i, categories.length)}
                 {@const metrics = groupedMetrics[cat]}
                 {@const abnormalCount = metrics.filter((m) =>
-                    isMetricAbnormal(m),
+                    isMetricAbnormal(m, dbRanges),
                 ).length}
                 {@const total = metrics.length}
                 {@const healthRatio = (total - abnormalCount) / total}
@@ -206,8 +212,14 @@
 
             <!-- Content -->
             <div class="flex-1 overflow-y-auto p-4 bg-slate-50">
-                <TrendChart allMetrics={groupedMetrics[selectedCategory]} />
-                <StringBiomarkers metrics={groupedMetrics[selectedCategory]} />
+                <TrendChart
+                    allMetrics={groupedMetrics[selectedCategory]}
+                    {dbRanges}
+                />
+                <StringBiomarkers
+                    metrics={groupedMetrics[selectedCategory]}
+                    {dbRanges}
+                />
             </div>
         </div>
     {/if}

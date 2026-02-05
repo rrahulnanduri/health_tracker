@@ -9,3 +9,24 @@ export interface Metric {
     recorded_at?: Date | string;
     status?: string;
 }
+
+export interface ReferenceRange {
+    test_name: string;
+    aliases?: string[];
+    unit?: string;
+    category?: string;
+    source?: string;
+    // Generic
+    optimal_min?: number;
+    optimal_max?: number;
+    normal_min?: number;
+    normal_max?: number;
+    // Gender specific
+    male_normal_min?: number;
+    male_normal_max?: number;
+    female_normal_min?: number;
+    female_normal_max?: number;
+    // We can add others as needed (critical, borderline)
+}
+
+export type ReferenceRangeMap = Record<string, ReferenceRange>;

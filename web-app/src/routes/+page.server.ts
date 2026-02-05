@@ -1,6 +1,7 @@
 import sql from '$lib/server/db';
-import type { Metric } from '$lib/types';
+import type { Metric, ReferenceRange } from '$lib/types';
 import type { PageServerLoad } from './$types';
+import { normalizeMetricName } from '$lib/utils';
 
 export const load: PageServerLoad = async ({ locals }) => {
     try {
@@ -126,14 +127,32 @@ export const load: PageServerLoad = async ({ locals }) => {
             };
         });
 
+        // Fetch reference ranges from DB
+        const referenceRangesResult = await sql<ReferenceRange[]>`
+            SELECT * FROM reference_ranges
+        `;
+
+        // creating a map for faster lookup: KEY = Normalized Test Name
+        const referenceRanges: Record<string, ReferenceRange> = {};
+        for (const range of referenceRangesResult) {
+            const keys = [range.test_name, ...(range.aliases || [])];
+            for (const key of keys) {
+                if (key) {
+                    referenceRanges[normalizeMetricName(key)] = range;
+                }
+            }
+        }
+
         return {
             metrics: parsedMetrics,
-            isSuperuser
+            isSuperuser,
+            referenceRanges
         };
     } catch (e: any) {
         console.error('Database connection error:', e);
         return {
             metrics: [],
+            referenceRanges: {},
             error: `Unable to connect: ${e.message || e}`
         };
     }
