@@ -148,12 +148,13 @@ export const load: PageServerLoad = async ({ locals }) => {
             isSuperuser,
             referenceRanges
         };
-    } catch (e: any) {
+    } catch (e: unknown) {
         console.error('Database connection error:', e);
+        const message = e instanceof Error ? e.message : String(e);
         return {
             metrics: [],
             referenceRanges: {},
-            error: `Unable to connect: ${e.message || e}`
+            error: `Unable to connect: ${message}`
         };
     }
 };
