@@ -90,11 +90,13 @@
 			class="rounded-md bg-amber-50 p-6 border border-amber-200 max-w-md text-center"
 		>
 			<h3 class="text-lg font-medium text-amber-800">
-				Account Setup Required
+				Account Setup Incomplete
 			</h3>
-			<p class="text-sm text-amber-700 mt-2">{data.message}</p>
+			<p class="text-sm text-amber-700 mt-2">
+				Please sign out and sign back in to complete your account setup.
+			</p>
 			<p class="text-xs text-amber-600 mt-4">
-				Your Clerk account needs to be linked to your patient record.
+				If this message persists after signing back in, contact support.
 			</p>
 		</div>
 	{:else if data.pendingVerification}
@@ -102,11 +104,13 @@
 			class="rounded-md bg-blue-50 p-6 border border-blue-200 max-w-md text-center"
 		>
 			<h3 class="text-lg font-medium text-blue-800">
-				Verification Pending
+				Awaiting Verification
 			</h3>
-			<p class="text-sm text-blue-700 mt-2">{data.message}</p>
+			<p class="text-sm text-blue-700 mt-2">
+				Your account is awaiting admin verification. This is usually done within 24 hours.
+			</p>
 			<p class="text-xs text-blue-600 mt-4">
-				Please wait for an administrator to verify your account.
+				If it's been longer than 24 hours, please contact support.
 			</p>
 		</div>
 	{:else if !data.metrics || data.metrics.length === 0}
