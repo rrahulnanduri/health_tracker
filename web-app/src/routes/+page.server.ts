@@ -3,7 +3,7 @@ import type { Metric, ReferenceRange } from '$lib/types';
 import type { PageServerLoad } from './$types';
 import { normalizeMetricName } from '$lib/utils';
 
-export const load: PageServerLoad = async ({ locals, url }) => {
+export const load: PageServerLoad = async ({ locals }) => {
     try {
         // Get the Clerk user ID from the session
         const clerkUserId = locals.session?.userId;
@@ -83,20 +83,11 @@ export const load: PageServerLoad = async ({ locals, url }) => {
             }
         }
 
+        // Build the query based on role
+        let metrics;
         if (isSuperuser) {
-            const PAGE_SIZE = 50;
-            let page = Math.max(1, parseInt(url.searchParams.get('page') ?? '1', 10));
-
-            const [countResult] = await sql`SELECT COUNT(*)::int AS total FROM lab_metrics`;
-            const totalCount: number = countResult.total;
-            const totalPages = Math.ceil(totalCount / PAGE_SIZE);
-
-            // Clamp page to valid range
-            page = Math.min(page, Math.max(1, totalPages));
-
-            const offset = (page - 1) * PAGE_SIZE;
-
-            const metrics = await sql`
+            // Superuser sees ALL data
+            metrics = await sql`
                 SELECT
                     id,
                     test_name,
@@ -108,58 +99,24 @@ export const load: PageServerLoad = async ({ locals, url }) => {
                     recorded_at
                 FROM lab_metrics
                 ORDER BY test_date DESC, test_name ASC
-                LIMIT ${PAGE_SIZE} OFFSET ${offset}
             `;
-
-            const parsedMetrics = metrics.map((row) => {
-                const originalValue = row.test_value as string;
-                let parsedValue: string | number = originalValue;
-                if (originalValue) {
-                    const cleaned = originalValue.replace(/,/g, '');
-                    if (!isNaN(parseFloat(cleaned)) && isFinite(Number(cleaned))) {
-                        parsedValue = parseFloat(cleaned);
-                    }
-                }
-                return {
-                    id: row.id,
-                    test_name: row.test_name,
-                    test_value: parsedValue,
-                    unit: row.unit,
-                    ref_range: row.ref_range,
-                    category: row.category,
-                    test_date: row.test_date,
-                    recorded_at: row.recorded_at
-                };
-            });
-
-            return {
-                metrics: parsedMetrics,
-                isSuperuser,
-                referenceRanges,
-                pagination: {
-                    page,
-                    pageSize: PAGE_SIZE,
-                    totalCount,
-                    totalPages: Math.ceil(totalCount / PAGE_SIZE),
-                },
-            };
+        } else {
+            // Regular user sees only their data
+            metrics = await sql`
+                SELECT
+                    id,
+                    test_name,
+                    test_value,
+                    unit,
+                    ref_range,
+                    category,
+                    test_date,
+                    recorded_at
+                FROM lab_metrics
+                WHERE user_id = ${authUser.user_id}
+                ORDER BY test_date DESC, test_name ASC
+            `;
         }
-
-        // Regular user sees only their data
-        const metrics = await sql`
-            SELECT
-                id,
-                test_name,
-                test_value,
-                unit,
-                ref_range,
-                category,
-                test_date,
-                recorded_at
-            FROM lab_metrics
-            WHERE user_id = ${authUser.user_id}
-            ORDER BY test_date DESC, test_name ASC
-        `;
 
         const parsedMetrics: Metric[] = metrics.map((row) => {
             const originalValue = row.test_value as string;
