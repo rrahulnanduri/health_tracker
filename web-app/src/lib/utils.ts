@@ -228,6 +228,14 @@ export function isMetricAbnormal(metric: Metric, dbRanges?: ReferenceRangeMap): 
         "ABSENT",
         "CLEAR",
         "PALE YELLOW",
+        "YELLOW",
+        "TRACE",
+        "FEW",
+        "RARE",
+        "NIL",
+        "NOT SEEN",
+        "OCCASIONAL",
+        "SCANTY",
     ];
     return !safeValues.includes(val);
 }
