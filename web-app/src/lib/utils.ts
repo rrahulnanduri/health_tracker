@@ -127,13 +127,7 @@ export function parseRange(
     testName?: string,
     dbRanges?: ReferenceRangeMap
 ): { min: number; max: number } | null {
-    // First, try to parse the provided range string
-    if (rangeStr) {
-        const parsed = parseRangeFromString(rangeStr);
-        if (parsed) return parsed;
-    }
-
-    // Fallback: lookup by test name in DB ranges
+    // First, try DB curated ranges (authoritative)
     if (testName && dbRanges) {
         const normalized = normalizeMetricName(testName);
         const fallback = dbRanges[normalized];
@@ -147,6 +141,12 @@ export function parseRange(
                 return { min: Number(min), max: Number(max) };
             }
         }
+    }
+
+    // Fallback: parse the inline range string from the lab report
+    if (rangeStr) {
+        const parsed = parseRangeFromString(rangeStr);
+        if (parsed) return parsed;
     }
 
     return null;

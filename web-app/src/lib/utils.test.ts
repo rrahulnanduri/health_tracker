@@ -25,6 +25,24 @@ describe('parseRange DB fallback uses normalizeMetricName key', () => {
         const result = parseRange('70 - 100', undefined, undefined);
         expect(result).toEqual({ min: 70, max: 100 });
     });
+
+    it('prefers DB range over inline range string when both available', () => {
+        const dbRanges: ReferenceRangeMap = {
+            [normalizeMetricName('TSH')]: {
+                test_name: 'TSH',
+                normal_min: 0.4,
+                normal_max: 4.0,
+            },
+        };
+        // Inline says 0-100, DB says 0.4-4.0 — DB should win
+        const result = parseRange('0 - 100', 'TSH', dbRanges);
+        expect(result).toEqual({ min: 0.4, max: 4.0 });
+    });
+
+    it('falls back to inline range when no DB match', () => {
+        const result = parseRange('70 - 100', 'Unknown Test', {});
+        expect(result).toEqual({ min: 70, max: 100 });
+    });
 });
 
 function makeMetric(value: string): Metric {
