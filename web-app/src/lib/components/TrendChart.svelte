@@ -205,27 +205,36 @@
         });
     }
 
-    // Y-axis tick values (dynamic step based on range)
+    function niceTickStep(range: number, targetCount = 6): number {
+        if (range <= 0) return 1;
+        const rough = range / targetCount;
+        const exp = Math.floor(Math.log10(rough));
+        const frac = rough / Math.pow(10, exp);
+        const nice = frac < 1.5 ? 1 : frac < 3 ? 2 : frac < 7 ? 5 : 10;
+        return nice * Math.pow(10, exp);
+    }
+
+    function formatTick(value: number, step: number): string {
+        const decimals = Math.max(0, -Math.floor(Math.log10(step)));
+        return value.toFixed(decimals);
+    }
+
+    let yTickStep = $derived(niceTickStep(yDomain.max - yDomain.min));
+
     let yTickValues = $derived.by(() => {
         const range = yDomain.max - yDomain.min;
-        // Choose step to get roughly 5-8 ticks
-        let step: number;
-        if (range <= 50) step = 10;
-        else if (range <= 100) step = 20;
-        else if (range <= 200) step = 25;
-        else if (range <= 500) step = 50;
-        else if (range <= 1000) step = 100;
-        else if (range <= 2000) step = 200;
-        else step = 500;
-
+        const step = niceTickStep(range);
         const startTick = Math.ceil(yDomain.min / step) * step;
         const endTick = Math.floor(yDomain.max / step) * step;
-        const ticks: number[] = [];
-        for (let v = startTick; v <= endTick; v += step) {
-            ticks.push(v);
+        const ticks: { value: number; label: string }[] = [];
+        // Use a small epsilon to avoid float rounding issues
+        for (let v = startTick; v <= endTick + step * 0.001; v += step) {
+            ticks.push({ value: v, label: formatTick(v, step) });
         }
         return ticks;
     });
+
+    let xLabelStride = $derived(Math.max(1, Math.ceil(currentData.length / 6)));
 </script>
 
 <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
@@ -323,7 +332,7 @@
                     font-size="11"
                     font-weight="500"
                 >
-                    {refRange.max}
+                    {formatTick(refRange.max, yTickStep)}
                 </text>
                 <text
                     x={PADDING.left - 8}
@@ -333,17 +342,17 @@
                     font-size="11"
                     font-weight="500"
                 >
-                    {refRange.min}
+                    {formatTick(refRange.min, yTickStep)}
                 </text>
             {/if}
 
-            <!-- Grid Lines with Y-Axis Tick Labels (multiples of 10) -->
-            {#each yTickValues as tickValue}
-                {@const yPos = yScale(tickValue)}
+            <!-- Grid Lines with Y-Axis Tick Labels -->
+            {#each yTickValues as tick}
+                {@const yPos = yScale(tick.value)}
                 {@const isRefBoundary =
                     refRange &&
-                    (Math.abs(tickValue - refRange.min) < 2 ||
-                        Math.abs(tickValue - refRange.max) < 2)}
+                    (Math.abs(tick.value - refRange.min) < yTickStep * 0.5 ||
+                        Math.abs(tick.value - refRange.max) < yTickStep * 0.5)}
                 <line
                     x1={PADDING.left}
                     y1={yPos}
@@ -359,9 +368,9 @@
                         y={yPos + 3}
                         text-anchor="end"
                         fill="#b0b8c4"
-                        font-size="6"
+                        font-size="11"
                     >
-                        {tickValue}
+                        {tick.label}
                     </text>
                 {/if}
             {/each}
@@ -403,15 +412,17 @@
 
             <!-- X-Axis Labels -->
             {#each currentData as dataPoint, i}
-                <text
-                    x={xScale(i, currentData.length)}
-                    y={HEIGHT - 15}
-                    text-anchor="middle"
-                    fill="#94a3b8"
-                    font-size="11"
-                >
-                    {formatDate(dataPoint.test_date)}
-                </text>
+                {#if i % xLabelStride === 0 || i === currentData.length - 1}
+                    <text
+                        x={xScale(i, currentData.length)}
+                        y={HEIGHT - 15}
+                        text-anchor="middle"
+                        fill="#94a3b8"
+                        font-size="11"
+                    >
+                        {formatDate(dataPoint.test_date)}
+                    </text>
+                {/if}
             {/each}
 
             <!-- Y-Axis Label -->
