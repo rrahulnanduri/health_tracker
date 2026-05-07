@@ -78,7 +78,14 @@ export const load: PageServerLoad = async ({ locals }) => {
             const keys = [range.test_name, ...(range.aliases || [])];
             for (const key of keys) {
                 if (key) {
-                    referenceRanges[normalizeMetricName(key)] = range;
+                    const normalized = normalizeMetricName(key);
+                    referenceRanges[normalized] = range;
+                    // Also index by sorted-words variant to handle word-order mismatches
+                    // e.g. "CALCIUM SERUM" matches alias "SERUM CALCIUM"
+                    const sorted = normalized.split(/\s+/).sort().join(' ');
+                    if (sorted !== normalized && !referenceRanges[sorted]) {
+                        referenceRanges[sorted] = range;
+                    }
                 }
             }
         }

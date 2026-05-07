@@ -389,17 +389,21 @@
             {#each currentData as dataPoint, i}
                 {@const isBaseline = i === baselineIndex}
                 {@const isLatest = i === currentData.length - 1}
+                {@const value = dataPoint.test_value as number}
+                {@const isOutOfRange = refRange !== null && (value < refRange.min || value > refRange.max)}
                 <circle
                     cx={xScale(i, currentData.length)}
-                    cy={yScale(dataPoint.test_value as number)}
+                    cy={yScale(value)}
                     r={hoveredIndex === i || isBaseline || isLatest ? 6 : 4}
-                    fill={hoveredIndex === i
-                        ? "#2563eb"
-                        : isBaseline
-                          ? "#f59e0b"
-                          : isLatest
-                            ? "#10b981"
-                            : "#3b82f6"}
+                    fill={isOutOfRange
+                        ? "#ef4444"
+                        : hoveredIndex === i
+                          ? "#2563eb"
+                          : isBaseline
+                            ? "#f59e0b"
+                            : isLatest
+                              ? "#10b981"
+                              : "#3b82f6"}
                     stroke="white"
                     stroke-width="2"
                     class="cursor-pointer transition-all duration-150"

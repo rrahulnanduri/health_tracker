@@ -130,16 +130,22 @@ export function parseRange(
     // First, try DB curated ranges (authoritative)
     if (testName && dbRanges) {
         const normalized = normalizeMetricName(testName);
-        const fallback = dbRanges[normalized];
+        let fallback = dbRanges[normalized];
+        if (!fallback) {
+            const sorted = normalized.split(/\s+/).sort().join(' ');
+            fallback = dbRanges[sorted];
+        }
         if (fallback) {
             // Prefer generic optimal/normal ranges
             // Future improvement: check patient gender if available to pick male/female specific
             const min = fallback.optimal_min ?? fallback.normal_min ?? fallback.male_normal_min ?? fallback.female_normal_min;
             const max = fallback.optimal_max ?? fallback.normal_max ?? fallback.male_normal_max ?? fallback.female_normal_max;
 
-            if (min !== undefined && max !== undefined && min !== null && max !== null) {
-                return { min: Number(min), max: Number(max) };
-            }
+            const hasMin = min !== undefined && min !== null;
+            const hasMax = max !== undefined && max !== null;
+            if (hasMin && hasMax) return { min: Number(min), max: Number(max) };
+            if (hasMax) return { min: 0, max: Number(max) };
+            // One-sided "more is better" (only min present): skip — rare and visualisation gets weird
         }
     }
 
