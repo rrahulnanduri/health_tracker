@@ -85,11 +85,16 @@ export const load: PageServerLoad = async ({ locals, url }) => {
 
         if (isSuperuser) {
             const PAGE_SIZE = 50;
-            const page = Math.max(1, parseInt(url.searchParams.get('page') ?? '1', 10));
-            const offset = (page - 1) * PAGE_SIZE;
+            let page = Math.max(1, parseInt(url.searchParams.get('page') ?? '1', 10));
 
             const [countResult] = await sql`SELECT COUNT(*)::int AS total FROM lab_metrics`;
             const totalCount: number = countResult.total;
+            const totalPages = Math.ceil(totalCount / PAGE_SIZE);
+
+            // Clamp page to valid range
+            page = Math.min(page, Math.max(1, totalPages));
+
+            const offset = (page - 1) * PAGE_SIZE;
 
             const metrics = await sql`
                 SELECT
