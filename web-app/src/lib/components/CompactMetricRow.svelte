@@ -1,16 +1,16 @@
 <script lang="ts">
-	import type { Metric } from "$lib/types";
+	import type { Metric, ReferenceRangeMap } from "$lib/types";
 	import { isMetricAbnormal, parseRange } from "$lib/utils";
 	import RangeIndicator from "./RangeIndicator.svelte";
 
-	let { metric }: { metric: Metric } = $props();
+	let { metric, dbRanges }: { metric: Metric; dbRanges?: ReferenceRangeMap } = $props();
 
 	// Use shared heuristic
-	let isPotentiallyAbnormal = $derived(isMetricAbnormal(metric));
+	let isPotentiallyAbnormal = $derived(isMetricAbnormal(metric, dbRanges));
 
 	let parsedRange = $derived(
 		typeof metric.test_value === "number"
-			? parseRange(metric.ref_range)
+			? parseRange(metric.ref_range, metric.test_name, dbRanges)
 			: null,
 	);
 
