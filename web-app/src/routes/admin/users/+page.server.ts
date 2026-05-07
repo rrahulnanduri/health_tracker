@@ -85,17 +85,24 @@ export const actions: Actions = {
         const data = await request.formData();
         const authUsersId = validateId(data.get('auth_users_id'));
         const patientName = data.get('patient_name');
+        const ageRaw = data.get('patient_age');
+        const genderRaw = data.get('patient_gender');
 
         if (!authUsersId || !patientName) {
             return fail(400, { missing: true });
         }
+
+        const age = ageRaw ? Math.max(0, parseInt(String(ageRaw), 10)) || 0 : 0;
+        const gender = ['MALE', 'FEMALE', 'OTHER'].includes(String(genderRaw).toUpperCase())
+            ? String(genderRaw).toUpperCase()
+            : 'UNKNOWN';
 
         try {
             await sql.begin(async (txSql) => {
                 const t = txSql as unknown as typeof sql;
                 const [newUser] = await t`
                     INSERT INTO users (name, age, gender)
-                    VALUES (${patientName.toString()}, 0, 'UNKNOWN')
+                    VALUES (${patientName.toString()}, ${age}, ${gender})
                     RETURNING id
                 `;
                 await t`

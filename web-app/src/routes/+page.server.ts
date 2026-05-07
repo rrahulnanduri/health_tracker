@@ -3,7 +3,7 @@ import type { Metric, ReferenceRange } from '$lib/types';
 import type { PageServerLoad } from './$types';
 import { normalizeMetricName } from '$lib/utils';
 
-export const load: PageServerLoad = async ({ locals }) => {
+export const load: PageServerLoad = async ({ locals, url }) => {
     try {
         // Get the Clerk user ID from the session
         const clerkUserId = locals.session?.userId;
@@ -17,8 +17,8 @@ export const load: PageServerLoad = async ({ locals }) => {
 
         // Look up the auth_users record to get the linked patient user_id
         const authUserResult = await sql`
-            SELECT user_id, role, is_verified 
-            FROM auth_users 
+            SELECT user_id, role, is_verified
+            FROM auth_users
             WHERE clerk_id = ${clerkUserId}
         `;
 
@@ -39,8 +39,8 @@ export const load: PageServerLoad = async ({ locals }) => {
 
                 // Fetch the newly created record
                 const newAuthResult = await sql`
-                    SELECT user_id, role, is_verified 
-                    FROM auth_users 
+                    SELECT user_id, role, is_verified
+                    FROM auth_users
                     WHERE clerk_id = ${clerkUserId}
                 `;
                 authUser = newAuthResult[0];
@@ -67,40 +67,99 @@ export const load: PageServerLoad = async ({ locals }) => {
             };
         }
 
-        // Build the query based on role
-        let metrics;
-        if (isSuperuser) {
-            // Superuser sees ALL data
-            metrics = await sql`
-                SELECT 
-                    id,
-                    test_name,
-                    test_value,
-                    unit,
-                    ref_range,
-                    category,
-                    test_date,
-                    recorded_at
-                FROM lab_metrics
-                ORDER BY test_date DESC, test_name ASC
-            `;
-        } else {
-            // Regular user sees only their data
-            metrics = await sql`
-                SELECT 
-                    id,
-                    test_name,
-                    test_value,
-                    unit,
-                    ref_range,
-                    category,
-                    test_date,
-                    recorded_at
-                FROM lab_metrics
-                WHERE user_id = ${authUser.user_id}
-                ORDER BY test_date DESC, test_name ASC
-            `;
+        // Fetch reference ranges from DB (needed by both branches)
+        const referenceRangesResult = await sql<ReferenceRange[]>`
+            SELECT * FROM reference_ranges
+        `;
+
+        // creating a map for faster lookup: KEY = Normalized Test Name
+        const referenceRanges: Record<string, ReferenceRange> = {};
+        for (const range of referenceRangesResult) {
+            const keys = [range.test_name, ...(range.aliases || [])];
+            for (const key of keys) {
+                if (key) {
+                    referenceRanges[normalizeMetricName(key)] = range;
+                }
+            }
         }
+
+        if (isSuperuser) {
+            const PAGE_SIZE = 50;
+            let page = Math.max(1, parseInt(url.searchParams.get('page') ?? '1', 10));
+
+            const [countResult] = await sql`SELECT COUNT(*)::int AS total FROM lab_metrics`;
+            const totalCount: number = countResult.total;
+            const totalPages = Math.ceil(totalCount / PAGE_SIZE);
+
+            // Clamp page to valid range
+            page = Math.min(page, Math.max(1, totalPages));
+
+            const offset = (page - 1) * PAGE_SIZE;
+
+            const metrics = await sql`
+                SELECT
+                    id,
+                    test_name,
+                    test_value,
+                    unit,
+                    ref_range,
+                    category,
+                    test_date,
+                    recorded_at
+                FROM lab_metrics
+                ORDER BY test_date DESC, test_name ASC
+                LIMIT ${PAGE_SIZE} OFFSET ${offset}
+            `;
+
+            const parsedMetrics = metrics.map((row) => {
+                const originalValue = row.test_value as string;
+                let parsedValue: string | number = originalValue;
+                if (originalValue) {
+                    const cleaned = originalValue.replace(/,/g, '');
+                    if (!isNaN(parseFloat(cleaned)) && isFinite(Number(cleaned))) {
+                        parsedValue = parseFloat(cleaned);
+                    }
+                }
+                return {
+                    id: row.id,
+                    test_name: row.test_name,
+                    test_value: parsedValue,
+                    unit: row.unit,
+                    ref_range: row.ref_range,
+                    category: row.category,
+                    test_date: row.test_date,
+                    recorded_at: row.recorded_at
+                };
+            });
+
+            return {
+                metrics: parsedMetrics,
+                isSuperuser,
+                referenceRanges,
+                pagination: {
+                    page,
+                    pageSize: PAGE_SIZE,
+                    totalCount,
+                    totalPages: Math.ceil(totalCount / PAGE_SIZE),
+                },
+            };
+        }
+
+        // Regular user sees only their data
+        const metrics = await sql`
+            SELECT
+                id,
+                test_name,
+                test_value,
+                unit,
+                ref_range,
+                category,
+                test_date,
+                recorded_at
+            FROM lab_metrics
+            WHERE user_id = ${authUser.user_id}
+            ORDER BY test_date DESC, test_name ASC
+        `;
 
         const parsedMetrics: Metric[] = metrics.map((row) => {
             const originalValue = row.test_value as string;
@@ -126,22 +185,6 @@ export const load: PageServerLoad = async ({ locals }) => {
                 recorded_at: row.recorded_at
             };
         });
-
-        // Fetch reference ranges from DB
-        const referenceRangesResult = await sql<ReferenceRange[]>`
-            SELECT * FROM reference_ranges
-        `;
-
-        // creating a map for faster lookup: KEY = Normalized Test Name
-        const referenceRanges: Record<string, ReferenceRange> = {};
-        for (const range of referenceRangesResult) {
-            const keys = [range.test_name, ...(range.aliases || [])];
-            for (const key of keys) {
-                if (key) {
-                    referenceRanges[normalizeMetricName(key)] = range;
-                }
-            }
-        }
 
         return {
             metrics: parsedMetrics,

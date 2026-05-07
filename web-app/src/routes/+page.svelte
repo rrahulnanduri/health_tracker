@@ -90,11 +90,13 @@
 			class="rounded-md bg-amber-50 p-6 border border-amber-200 max-w-md text-center"
 		>
 			<h3 class="text-lg font-medium text-amber-800">
-				Account Setup Required
+				Account Setup Incomplete
 			</h3>
-			<p class="text-sm text-amber-700 mt-2">{data.message}</p>
+			<p class="text-sm text-amber-700 mt-2">
+				Please sign out and sign back in to complete your account setup.
+			</p>
 			<p class="text-xs text-amber-600 mt-4">
-				Your Clerk account needs to be linked to your patient record.
+				If this message persists after signing back in, contact support.
 			</p>
 		</div>
 	{:else if data.pendingVerification}
@@ -102,11 +104,13 @@
 			class="rounded-md bg-blue-50 p-6 border border-blue-200 max-w-md text-center"
 		>
 			<h3 class="text-lg font-medium text-blue-800">
-				Verification Pending
+				Awaiting Verification
 			</h3>
-			<p class="text-sm text-blue-700 mt-2">{data.message}</p>
+			<p class="text-sm text-blue-700 mt-2">
+				Your account is awaiting admin verification. This is usually done within 24 hours.
+			</p>
 			<p class="text-xs text-blue-600 mt-4">
-				Please wait for an administrator to verify your account.
+				If it's been longer than 24 hours, please contact support.
 			</p>
 		</div>
 	{:else if !data.metrics || data.metrics.length === 0}
@@ -132,6 +136,31 @@
 				dbRanges={data.referenceRanges}
 				onTestClick={handleTestClick}
 			/>
+		{/if}
+
+		{#if data.isSuperuser && data.pagination && data.pagination.totalPages > 1}
+			<div class="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 flex items-center gap-3 bg-white/90 backdrop-blur-sm rounded-lg px-4 py-2 shadow-lg border border-slate-200">
+				<a
+					href="?page={data.pagination.page - 1}"
+					class="px-3 py-1 rounded text-sm font-medium transition-colors {(data.pagination?.page ?? 1) <= 1 ? 'text-slate-300 pointer-events-none' : 'text-slate-700 hover:bg-slate-100'}"
+					aria-disabled={(data.pagination?.page ?? 1) <= 1}
+					tabindex={(data.pagination?.page ?? 1) <= 1 ? -1 : undefined}
+				>
+					← Prev
+				</a>
+				<span class="text-sm text-slate-600">
+					Page {data.pagination?.page} of {data.pagination?.totalPages}
+					<span class="text-slate-400">({data.pagination?.totalCount} total)</span>
+				</span>
+				<a
+					href="?page={data.pagination.page + 1}"
+					class="px-3 py-1 rounded text-sm font-medium transition-colors {(data.pagination?.page ?? 1) >= (data.pagination?.totalPages ?? 1) ? 'text-slate-300 pointer-events-none' : 'text-slate-700 hover:bg-slate-100'}"
+					aria-disabled={(data.pagination?.page ?? 1) >= (data.pagination?.totalPages ?? 1)}
+					tabindex={(data.pagination?.page ?? 1) >= (data.pagination?.totalPages ?? 1) ? -1 : undefined}
+				>
+					Next →
+				</a>
+			</div>
 		{/if}
 	{/if}
 </div>
