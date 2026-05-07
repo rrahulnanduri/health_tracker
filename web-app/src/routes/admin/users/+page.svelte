@@ -106,7 +106,7 @@
                                     method="POST"
                                     action="?/create_and_link"
                                     use:enhance
-                                    class="flex gap-2 items-center"
+                                    class="flex flex-wrap gap-2 items-center"
                                 >
                                     <input
                                         type="hidden"
@@ -116,10 +116,27 @@
                                     <input
                                         type="text"
                                         name="patient_name"
-                                        placeholder="New Patient Name"
-                                        class="bg-slate-700 border-slate-600 rounded px-3 py-2 text-sm focus:ring-2 focus:ring-green-500 outline-none"
+                                        placeholder="Patient name"
                                         required
+                                        class="px-3 py-2 bg-slate-700 border border-slate-600 rounded text-sm text-white placeholder-slate-400 focus:outline-none focus:border-blue-500 w-40"
                                     />
+                                    <input
+                                        type="number"
+                                        name="patient_age"
+                                        placeholder="Age"
+                                        min="0"
+                                        max="150"
+                                        class="px-3 py-2 bg-slate-700 border border-slate-600 rounded text-sm text-white placeholder-slate-400 focus:outline-none focus:border-blue-500 w-20"
+                                    />
+                                    <select
+                                        name="patient_gender"
+                                        class="px-3 py-2 bg-slate-700 border border-slate-600 rounded text-sm text-white focus:outline-none focus:border-blue-500"
+                                    >
+                                        <option value="">Gender</option>
+                                        <option value="MALE">Male</option>
+                                        <option value="FEMALE">Female</option>
+                                        <option value="OTHER">Other</option>
+                                    </select>
                                     <button
                                         class="px-4 py-2 bg-green-600 hover:bg-green-500 rounded text-sm font-medium transition-colors"
                                     >

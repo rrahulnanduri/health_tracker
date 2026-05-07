@@ -84,28 +84,37 @@ export const actions: Actions = {
         const data = await request.formData();
         const authUsersId = data.get('auth_users_id');
         const patientName = data.get('patient_name');
+        const ageRaw = data.get('patient_age');
+        const genderRaw = data.get('patient_gender');
 
         if (!authUsersId || !patientName) {
             return fail(400, { missing: true });
         }
 
+        const parsedAuthUsersId = parseInt(String(authUsersId), 10);
+        if (isNaN(parsedAuthUsersId) || parsedAuthUsersId <= 0) {
+            return fail(400, { missing: true });
+        }
+
+        const age = ageRaw ? Math.max(0, parseInt(String(ageRaw), 10)) || 0 : 0;
+        const gender = ['MALE', 'FEMALE', 'OTHER'].includes(String(genderRaw).toUpperCase())
+            ? String(genderRaw).toUpperCase()
+            : 'UNKNOWN';
+
         try {
-            // Transaction-like approach (though postgres.js does transactions differently, sequential works for now)
-            // 1. Create user
-            const newUser = await sql`
-                INSERT INTO users (name, age, gender) 
-                VALUES (${patientName.toString()}, 0, 'UNKNOWN') 
-                RETURNING id
-            `;
-            const newUserId = newUser[0].id;
-
-            // 2. Link auth_user
-            await sql`
-                UPDATE auth_users 
-                SET user_id = ${newUserId}, is_verified = true 
-                WHERE id = ${authUsersId.toString()}
-            `;
-
+            await sql.begin(async (txSql) => {
+                const sql2 = txSql as unknown as typeof sql;
+                const [newUser] = await sql2`
+                    INSERT INTO users (name, age, gender)
+                    VALUES (${patientName.toString()}, ${age}, ${gender})
+                    RETURNING id
+                `;
+                await sql2`
+                    UPDATE auth_users
+                    SET user_id = ${newUser.id}, is_verified = true
+                    WHERE id = ${parsedAuthUsersId}
+                `;
+            });
             return { success: true };
         } catch (e) {
             console.error('Create and link error:', e);
