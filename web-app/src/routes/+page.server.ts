@@ -1,7 +1,7 @@
 import sql from '$lib/server/db';
 import type { Metric, ReferenceRange } from '$lib/types';
 import type { PageServerLoad } from './$types';
-import { normalizeMetricName } from '$lib/utils';
+import { normalizeMetricName, parseRange } from '$lib/utils';
 
 export const load: PageServerLoad = async ({ locals }) => {
     try {
@@ -149,6 +149,20 @@ export const load: PageServerLoad = async ({ locals }) => {
                 recorded_at: row.recorded_at
             };
         });
+
+        // Surface biomarkers that have no parseable range (no green zone, no abnormal detection).
+        // Captured by Vercel runtime logs; visible in admin/range-coverage page too.
+        const missingRangeTests = new Set<string>();
+        for (const m of parsedMetrics) {
+            if (typeof m.test_value === 'number' && !missingRangeTests.has(m.test_name)) {
+                if (!parseRange(m.ref_range, m.test_name, referenceRanges)) {
+                    missingRangeTests.add(m.test_name);
+                }
+            }
+        }
+        if (missingRangeTests.size > 0) {
+            console.warn('[range-miss]', Array.from(missingRangeTests).join(' | '));
+        }
 
         return {
             metrics: parsedMetrics,

@@ -26,6 +26,11 @@
             </div>
         </header>
 
+        <nav class="mb-6 flex gap-4 text-sm">
+            <a href="/admin/users" class="text-blue-400 hover:text-blue-300 underline">User Management</a>
+            <a href="/admin/range-coverage" class="text-slate-400 hover:text-slate-300">Range Coverage</a>
+        </nav>
+
         <!-- Section: Pending Users -->
         <section class="mb-12">
             <h2
