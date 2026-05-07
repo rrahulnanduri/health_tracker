@@ -90,22 +90,19 @@ export const actions: Actions = {
         }
 
         try {
-            // Transaction-like approach (though postgres.js does transactions differently, sequential works for now)
-            // 1. Create user
-            const newUser = await sql`
-                INSERT INTO users (name, age, gender) 
-                VALUES (${patientName.toString()}, 0, 'UNKNOWN') 
-                RETURNING id
-            `;
-            const newUserId = newUser[0].id;
-
-            // 2. Link auth_user
-            await sql`
-                UPDATE auth_users 
-                SET user_id = ${newUserId}, is_verified = true 
-                WHERE id = ${authUsersId.toString()}
-            `;
-
+            await sql.begin(async (txSql) => {
+                const t = txSql as unknown as typeof sql;
+                const [newUser] = await t`
+                    INSERT INTO users (name, age, gender)
+                    VALUES (${patientName.toString()}, 0, 'UNKNOWN')
+                    RETURNING id
+                `;
+                await t`
+                    UPDATE auth_users
+                    SET user_id = ${newUser.id}, is_verified = true
+                    WHERE id = ${authUsersId.toString()}
+                `;
+            });
             return { success: true };
         } catch (e) {
             console.error('Create and link error:', e);
