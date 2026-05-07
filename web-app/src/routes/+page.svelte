@@ -133,6 +133,29 @@
 				onTestClick={handleTestClick}
 			/>
 		{/if}
+
+		{#if data.isSuperuser && data.pagination && data.pagination.totalPages > 1}
+			<div class="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 flex items-center gap-3 bg-white/90 backdrop-blur-sm rounded-lg px-4 py-2 shadow-lg border border-slate-200">
+				<a
+					href="?page={data.pagination.page - 1}"
+					class="px-3 py-1 rounded text-sm font-medium transition-colors {data.pagination?.page <= 1 ? 'text-slate-300 pointer-events-none' : 'text-slate-700 hover:bg-slate-100'}"
+					aria-disabled={data.pagination?.page <= 1}
+				>
+					← Prev
+				</a>
+				<span class="text-sm text-slate-600">
+					Page {data.pagination?.page} of {data.pagination?.totalPages}
+					<span class="text-slate-400">({data.pagination?.totalCount} total)</span>
+				</span>
+				<a
+					href="?page={data.pagination.page + 1}"
+					class="px-3 py-1 rounded text-sm font-medium transition-colors {data.pagination?.page >= data.pagination?.totalPages ? 'text-slate-300 pointer-events-none' : 'text-slate-700 hover:bg-slate-100'}"
+					aria-disabled={data.pagination?.page >= data.pagination?.totalPages}
+				>
+					Next →
+				</a>
+			</div>
+		{/if}
 	{/if}
 </div>
 
