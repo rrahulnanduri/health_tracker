@@ -1,6 +1,7 @@
 import type { PageServerLoad, Actions } from './$types';
 import { error, fail } from '@sveltejs/kit';
 import sql from '$lib/server/db';
+import { validateId } from '$lib/server/validateId';
 
 // Ensure only superusers can access this page
 const checkSuperuser = async (locals: App.Locals) => {
@@ -58,8 +59,8 @@ export const actions: Actions = {
     link: async ({ request, locals }) => {
         await checkSuperuser(locals);
         const data = await request.formData();
-        const authUsersId = data.get('auth_users_id');
-        const userId = data.get('user_id');
+        const authUsersId = validateId(data.get('auth_users_id'));
+        const userId = validateId(data.get('user_id'));
 
         if (!authUsersId || !userId) {
             return fail(400, { missing: true });
@@ -67,9 +68,9 @@ export const actions: Actions = {
 
         try {
             await sql`
-                UPDATE auth_users 
-                SET user_id = ${userId.toString()}, is_verified = true 
-                WHERE id = ${authUsersId.toString()}
+                UPDATE auth_users
+                SET user_id = ${userId}, is_verified = true
+                WHERE id = ${authUsersId}
             `;
             return { success: true };
         } catch (e) {
@@ -82,7 +83,7 @@ export const actions: Actions = {
     create_and_link: async ({ request, locals }) => {
         await checkSuperuser(locals);
         const data = await request.formData();
-        const authUsersId = data.get('auth_users_id');
+        const authUsersId = validateId(data.get('auth_users_id'));
         const patientName = data.get('patient_name');
 
         if (!authUsersId || !patientName) {
@@ -93,17 +94,17 @@ export const actions: Actions = {
             // Transaction-like approach (though postgres.js does transactions differently, sequential works for now)
             // 1. Create user
             const newUser = await sql`
-                INSERT INTO users (name, age, gender) 
-                VALUES (${patientName.toString()}, 0, 'UNKNOWN') 
+                INSERT INTO users (name, age, gender)
+                VALUES (${patientName.toString()}, 0, 'UNKNOWN')
                 RETURNING id
             `;
             const newUserId = newUser[0].id;
 
             // 2. Link auth_user
             await sql`
-                UPDATE auth_users 
-                SET user_id = ${newUserId}, is_verified = true 
-                WHERE id = ${authUsersId.toString()}
+                UPDATE auth_users
+                SET user_id = ${newUserId}, is_verified = true
+                WHERE id = ${authUsersId}
             `;
 
             return { success: true };
@@ -117,15 +118,15 @@ export const actions: Actions = {
     unlink: async ({ request, locals }) => {
         await checkSuperuser(locals);
         const data = await request.formData();
-        const authUsersId = data.get('auth_users_id');
+        const authUsersId = validateId(data.get('auth_users_id'));
 
         if (!authUsersId) return fail(400, { missing: true });
 
         try {
             await sql`
-                UPDATE auth_users 
-                SET user_id = NULL, is_verified = false 
-                WHERE id = ${authUsersId.toString()}
+                UPDATE auth_users
+                SET user_id = NULL, is_verified = false
+                WHERE id = ${authUsersId}
             `;
             return { success: true };
         } catch (e) {
