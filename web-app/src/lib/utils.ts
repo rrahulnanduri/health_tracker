@@ -135,7 +135,7 @@ export function parseRange(
 
     // Fallback: lookup by test name in DB ranges
     if (testName && dbRanges) {
-        const normalized = testName.trim().toUpperCase();
+        const normalized = normalizeMetricName(testName);
         const fallback = dbRanges[normalized];
         if (fallback) {
             // Prefer generic optimal/normal ranges
